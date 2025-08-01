@@ -1,16 +1,11 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "Red Latinoamericana de Ciencias Planetarias y Exploración Espacial";
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout pageTitle={pageTitle}>
+	<p>Somos una comunidad apasionada por el desarrollo de las Ciencias Planetarias y la Exploración Espacial en Latinamérica.</p>
+  <h2>Misión</h2>
+	<p>Reunir e integrar a la comunidad científica latinoamericana dedicada a las ciencias planetarias y la exploración espacial, fomentando un entorno inclusivo, interdisciplinario y colaborativo.</p>
+  <h2>Visión</h2>
+	<p>Nuestra visión es consolidar una comunidad latinoamericana activa, diversa e interdisciplinaria en ciencias planetarias y exploración espacial, con participación significativa a nivel regional e internacional, con un fuerte enfoque en inclusión, educación y desarrollo científico sostenible.</p>
+</BaseLayout>
