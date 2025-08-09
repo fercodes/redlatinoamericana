@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogPost from '../components/BlogPost.astro';
+const allPosts = Object.values(import.meta.glob('./noticias/*.md', { eager: true }));
+const pageTitle = "Noticias y eventos";
+---
+<BaseLayout pageTitle={pageTitle}>
+  <p>Aquí encontrarás pasantías, becas, eventos y noticias que estaremos compartiendo.</p>
+  <ul>
+    {allPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title} />)}
+  </ul>
+</BaseLayout>
