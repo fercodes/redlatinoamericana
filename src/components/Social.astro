@@ -1,13 +1,22 @@
 ---
 const { platform, username } = Astro.props;
+const iconSrc = `/${platform}.svg`;
 ---
-<a href={`https://www.${platform}.com/${username}`}>{platform}</a>
+<a href={`https://www.${platform}.com/${username}`} aria-label={platform}>
+  <img src={iconSrc} alt={platform} style="width:24px;height:24px;" />
+</a>
 
 <style>
   a {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     color: white;
-    background-color: #0c2f60;
+    background-color: white;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+  }
+  img {
+    display: block;
   }
 </style>
