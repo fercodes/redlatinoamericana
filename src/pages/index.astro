@@ -1,11 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const pageTitle = "Red Latinoamericana de Ciencias Planetarias y Exploración Espacial";
+import PhotoSlider from "../components/PhotoSlider.astro";
+
+const photos = [
+  "/images/photo1.jpg",
+  "/images/photo2.jpg",
+  "/images/photo3.jpg",
+	"/images/photo4.jpg",
+	"/images/photo5.jpg",
+	"/images/photo6.jpg",
+	"/images/photo7.jpg",
+];
+const pageTitle = "";
 ---
 <BaseLayout pageTitle={pageTitle}>
-		<p>Somos una comunidad apasionada por el desarrollo de las Ciencias Planetarias y la Exploración Espacial en Latinamérica.</p>
-		<h2>Misión</h2>
-		<p>Reunir e integrar a la comunidad científica latinoamericana dedicada a las ciencias planetarias y la exploración espacial, fomentando un entorno inclusivo, interdisciplinario y colaborativo.</p>
-		<h2>Visión</h2>
-		<p>Nuestra visión es consolidar una comunidad latinoamericana activa, diversa e interdisciplinaria en ciencias planetarias y exploración espacial, con participación significativa a nivel regional e internacional, con un fuerte enfoque en inclusión, educación y desarrollo científico sostenible.</p>
+	<PhotoSlider photos={photos} />
+	<p>Somos una comunidad apasionada por el desarrollo de las Ciencias Planetarias y la Exploración Espacial en Latinamérica.</p>
+	<h2>Misión</h2>
+	<p>Reunir e integrar a la comunidad científica latinoamericana dedicada a las ciencias planetarias y la exploración espacial, fomentando un entorno inclusivo, interdisciplinario y colaborativo.</p>
+	<h2>Visión</h2>
+	<p>Nuestra visión es consolidar una comunidad latinoamericana activa, diversa e interdisciplinaria en ciencias planetarias y exploración espacial, con participación significativa a nivel regional e internacional, con un fuerte enfoque en inclusión, educación y desarrollo científico sostenible.</p>
 </BaseLayout>
