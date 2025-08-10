@@ -43,7 +43,8 @@ p {
 
 /* nav styles */
 .hamburger {
-  padding-right: 20px;
+  position: absolute;
+  padding: 2px;
   cursor: pointer;
 }
 
@@ -98,5 +99,11 @@ p {
 
   .hamburger {
     display: none;
+  }
+}
+
+@media screen and (max-width: 635px) {
+  .centered-content {
+    padding: 0 16px;
   }
 }
