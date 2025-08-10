@@ -2,7 +2,7 @@
 layout: ../../layouts/MarkdownPostLayout.astro
 title: 'Blog de prueba'
 pubDate: 2025-08-08
-description: '¿Sueñan los androides con ovejas robóticas?'
+description: '¿Sueñan los androides con ovejas eléctricas?'
 author: 'Un 100tifiko'
 image:
   url: 'https://docs.astro.build/assets/rose.webp'
