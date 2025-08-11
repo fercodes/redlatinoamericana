@@ -60,7 +60,7 @@ p {
   width: 100%;
   top: 5rem;
   left: 48px;
-  background-color: #e3be23;
+  background-color: #0c2f60;
   display: none;
   margin: 0;
 }
@@ -72,11 +72,13 @@ p {
   text-decoration: none;
   font-size: 1rem;
   font-weight: bold;
+  background-color: #0c2f60;
+  color: #e3be23;
 }
 
 .nav-links a:hover,
 .nav-links a:focus {
-  background-color: #e3be23;
+  background-color: #031937;
 }
 
 .expanded {
@@ -89,7 +91,6 @@ p {
     display: block;
     position: static;
     width: auto;
-    background: none;
   }
 
   .nav-links a {
