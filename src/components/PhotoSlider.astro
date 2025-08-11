@@ -1,11 +1,15 @@
 ---
+interface Photo {
+  src: string;
+  caption: string;
+}
+
 interface Props {
-  photos: string[];
+  photos: Photo[];
 }
 
 const { photos } = Astro.props as Props;
 ---
-
 <style>
   .slider {
     position: relative;
@@ -20,9 +24,28 @@ const { photos } = Astro.props as Props;
     transition: transform 0.5s ease-in-out;
   }
 
-  .slides img {
+  .slide {
+    position: relative;
     width: 100%;
     flex-shrink: 0;
+  }
+
+  .slide img {
+    width: 100%;
+    display: block;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    padding: 0.5rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
   }
 
   .controls {
@@ -47,8 +70,11 @@ const { photos } = Astro.props as Props;
 
 <div class="slider" id="slider">
   <div class="slides" id="slides">
-    {photos.map(photo => (
-      <img src={photo} alt="Slide" loading="lazy" />
+    {photos.map((photo) => (
+      <div class="slide">
+        <img src={photo.src} alt="Slide" loading="lazy" />
+        {photo.caption && <div class="caption">{photo.caption}</div>}
+      </div>
     ))}
   </div>
   <div class="controls">
