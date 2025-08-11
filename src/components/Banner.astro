@@ -17,10 +17,21 @@ import Social from './Social.astro';
     display: flex;
     gap: 1rem;
   }
+
+  img {
+    height: 140px;
+  }
+
+  @media screen and (max-width: 635px) {
+    img {
+      height: 65px;
+    }
+  }
+
 </style>
 
 <banner>
-  <img src="/logo_blanco.png" alt="Logo" style="height: 140px;" />
+  <img src="/logo_blanco.png" alt="Logo" />
   <div class="social-group">
     <Social platform="facebook" username="profile.php?id=61577709521939" />
     <Social platform="instagram" username="redlatam_csplanetyespaciales" />
