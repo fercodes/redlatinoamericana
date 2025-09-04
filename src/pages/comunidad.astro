@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "Nuestros miembros";
+import PersonCard from '../components/PersonCard.astro';
+import { supabase } from '../lib/supabaseClient';
+
+const { data: people, error } = await supabase
+  .from('comite_directivo')
+  .select('*')
+  .order('id');
+
+if (error) console.error(error);
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <body>
+    <h2>Comité directivo</h2>
+    <div class="grid">
+      {people?.map(person => (
+        <PersonCard person={person} />
+      ))}
+    </div>
+  </body>
+</BaseLayout>
+
+
+<style>
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+</style>
