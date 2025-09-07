@@ -2,7 +2,14 @@
 const { platform, username } = Astro.props;
 const iconSrc = `/${platform}.svg`;
 ---
-<a href={`https://www.${platform}.com/${username}`} aria-label={platform}>
+
+<a 
+  href={`https://www.${platform}.com/${username}`} 
+  aria-label={platform} 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  referrerpolicy="no-referrer"
+>
   <img src={iconSrc} alt={platform} style="width:24px;height:24px;" />
 </a>
 
