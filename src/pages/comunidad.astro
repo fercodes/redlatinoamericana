@@ -4,25 +4,37 @@ const pageTitle = "Nuestros miembros";
 import PersonCard from '../components/PersonCard.astro';
 import { supabase } from '../lib/supabaseClient';
 
-const { data: people, error } = await supabase
+const { data: comite, error: comiteError } = await supabase
   .from('comite_directivo')
   .select('*')
   .order('id');
 
-if (error) console.error(error);
+const { data: fundadores, error: fundadoresError } = await supabase
+  .from('fundadores')
+  .select('*')
+  .order('id');
+
+if (comiteError) console.error(comiteError);
+if (fundadoresError) console.error(fundadoresError);
 ---
 
 <BaseLayout pageTitle={pageTitle}>
   <body>
-    <h2>Comité directivo</h2>
+    <h2>Comité Directivo</h2>
     <div class="grid">
-      {people?.map(person => (
+      {comite?.map(person => (
+        <PersonCard person={person} />
+      ))}
+    </div>
+
+    <h2>Fundadores</h2>
+    <div class="grid">
+      {fundadores?.map(person => (
         <PersonCard person={person} />
       ))}
     </div>
   </body>
 </BaseLayout>
-
 
 <style>
 .grid {

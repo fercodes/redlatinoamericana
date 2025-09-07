@@ -9,16 +9,22 @@ const imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${person.pro
   <div class="avatar-container">
     <img src={imageUrl} alt={person.full_name} class="avatar" />
   </div>
-  <h2>{person.full_name}</h2>
-  <p><strong>Cargo:</strong> {person.cargo}</p>
-  <p><strong>Phone:</strong> {person.phone_number}</p>
-  <p><strong>Country:</strong> {person.home_country}</p>
-  <p><strong>City:</strong> {person.city}</p>
-  <p><strong>Location:</strong> {person.location}</p>
-  <p><strong>Education:</strong> {person.education}</p>
-  <p><strong>Affiliation:</strong> {person.affiliation}</p>
-  <p><strong>Research interests:</strong> {person.research_interests}</p>
-  <p><strong>Professional email:</strong> {person.professional_email}</p>
+  {person.full_name && <h2>{person.full_name}</h2>}
+  {person.cargo && <p><strong>Cargo:</strong> {person.cargo}</p>}
+  {person.phone_number && <p><strong>Phone:</strong> {person.phone_number}</p>}
+  {person.home_country && <p><strong>Country:</strong> {person.home_country}</p>}
+  {person.city && <p><strong>City:</strong> {person.city}</p>}
+  {person.location && <p><strong>Location:</strong> {person.location}</p>}
+  {person.education && <p><strong>Education:</strong> {person.education}</p>}
+  {person.affiliation && <p><strong>Affiliation:</strong> {person.affiliation}</p>}
+  {person.research_interests && (
+    <p><strong>Research interests:</strong> {person.research_interests}</p>
+  )}
+  {person.professional_email && (
+    <p><strong>Professional email:</strong> {person.professional_email}</p>
+  )}
+</div>
+
 
 <style>
 .card {

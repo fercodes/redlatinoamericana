@@ -1,0 +1,33 @@
+---
+import { supabase } from "../lib/supabaseClient";
+
+const { data: miembros } = await supabase
+  .from("miembros")
+  .select("*")
+  .eq("agree_to_publish_profile", "Yes");
+
+const safeMiembros = miembros ?? [];
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>Full Name</th>
+      <th>Country</th>
+      <th>City</th>
+      <th>Affiliation</th>
+      <th>Professional Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    {safeMiembros.map(person => (
+      <tr>
+        <td>{person.full_name}</td>
+        <td>{person.home_country}</td>
+        <td>{person.city}</td>
+        <td>{person.affiliation}</td>
+        <td>{person.professional_email}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
