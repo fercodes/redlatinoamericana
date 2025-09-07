@@ -16,15 +16,29 @@ const { data: fundadores, error: fundadoresError } = await supabase
   .select('*')
   .order('id');
 
+// Fetch Puntos Nacionales de Contacto
+const { data: puntos, error: puntosError } = await supabase
+  .from('puntos_nacionales_de_contacto')
+  .select('*')
+  .order('id');
+
+// Fetch Asesores Internacionales
+const { data: asesores, error: asesoresError } = await supabase
+  .from('asesores_internacionales')
+  .select('*')
+  .order('full_name');
+
 // Fetch Miembros
 const { data: miembros, error: miembrosError } = await supabase
   .from('miembros')
   .select('*')
-  .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes'])
+  .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes', 'YES', 'Sí', 'SÍ', 'Yes/Si', 'Yes/Sí'])
   .order('full_name');
 
 if (comiteError) console.error(comiteError);
 if (fundadoresError) console.error(fundadoresError);
+if (puntosError) console.error(puntosError);
+if (asesoresError) console.error(asesoresError);
 if (miembrosError) console.error(miembrosError);
 ---
 
@@ -34,6 +48,8 @@ if (miembrosError) console.error(miembrosError);
     <div class="tabs">
       <button data-tab="comite" class="active">Comité Directivo</button>
       <button data-tab="fundadores">Fundadores</button>
+      <button data-tab="puntos">Puntos Nacionales de Contacto</button>
+      <button data-tab="asesores">Asesores Internacionales</button>
       <button data-tab="miembros">Miembros</button>
     </div>
 
@@ -56,6 +72,70 @@ if (miembrosError) console.error(miembrosError);
           ))}
         </div>
       </div>
+
+      <!-- Puntos Nacionales Table -->
+      <div id="puntos" class="tab-section hidden">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre completo</th>
+                <th>País</th>
+                <th>Afiliación</th>
+                <th>Correo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(puntos ?? []).map(person => (
+                <tr>
+                  <td>{person.full_name}</td>
+                  <td>{person.country}</td>
+                  <td>{person.affiliation}</td>
+                  <td>{person.email}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Asesores Internacionales Table -->
+      <div id="asesores" class="tab-section hidden">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre completo</th>
+                <th>País</th>
+                <th>Ciudad</th>
+                <th>Educación</th>
+                <th>Afiliación</th>
+                <th>Intereses de investigación</th>
+                <th>Ubicación</th>
+                <th>Email profesional</th>
+                <th>Red social</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(asesores ?? []).map(person => (
+                <tr>
+                  <td>{person.full_name}</td>
+                  <td>{person.home_country}</td>
+                  <td>{person.city}</td>
+                  <td>{person.education}</td>
+                  <td>{person.affiliation}</td>
+                  <td>{person.research_interests}</td>
+                  <td>{person.location}</td>
+                  <td>{person.professional_email}</td>
+                  <td>{person.links_social_media}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
       <!-- Miembros Table -->
       <div id="miembros" class="tab-section hidden">
