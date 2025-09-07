@@ -11,17 +11,17 @@ const imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${person.pro
   </div>
   {person.full_name && <h2>{person.full_name}</h2>}
   {person.cargo && <p><strong>Cargo:</strong> {person.cargo}</p>}
-  {person.phone_number && <p><strong>Phone:</strong> {person.phone_number}</p>}
-  {person.home_country && <p><strong>Country:</strong> {person.home_country}</p>}
-  {person.city && <p><strong>City:</strong> {person.city}</p>}
-  {person.location && <p><strong>Location:</strong> {person.location}</p>}
-  {person.education && <p><strong>Education:</strong> {person.education}</p>}
-  {person.affiliation && <p><strong>Affiliation:</strong> {person.affiliation}</p>}
+  {person.phone_number && <p><strong>Número:</strong> {person.phone_number}</p>}
+  {person.home_country && <p><strong>País:</strong> {person.home_country}</p>}
+  {person.city && <p><strong>Ciudad:</strong> {person.city}</p>}
+  {person.location && <p><strong>Ubicación:</strong> {person.location}</p>}
+  {person.education && <p><strong>Educación:</strong> {person.education}</p>}
+  {person.affiliation && <p><strong>Afiliación:</strong> {person.affiliation}</p>}
   {person.research_interests && (
-    <p><strong>Research interests:</strong> {person.research_interests}</p>
+    <p><strong>Intereses de investigación:</strong> {person.research_interests}</p>
   )}
   {person.professional_email && (
-    <p><strong>Professional email:</strong> {person.professional_email}</p>
+    <p><strong>Email profesional:</strong> {person.professional_email}</p>
   )}
 </div>
 
