@@ -3,8 +3,9 @@ const { person } = Astro.props;
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const bucket = "people";
 const imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${person.profile_picture}`;
----
 
+
+---
 <div class="card">
   <div class="avatar-container">
     <img src={imageUrl} alt={person.full_name} class="avatar" />
@@ -23,6 +24,21 @@ const imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${person.pro
   {person.professional_email && (
     <p><strong>Email profesional:</strong> {person.professional_email}</p>
   )}
+
+  {person.links_social_media &&
+    person.links_social_media
+      .split(/[\s,]+/) // split by spaces or commas
+      .filter(url => url.startsWith("https"))
+      .map(url => (
+        <p>
+          <strong>Redes sociales:</strong>
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {url}
+          </a>
+        </p>
+      ))
+  }
+
 </div>
 
 
@@ -30,15 +46,20 @@ const imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${person.pro
 .card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   padding: 1.5rem 1rem;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   background: #ffffff;
   max-width: 280px;
-  text-align: center;
+  text-align: left;
   transition: transform 0.2s, box-shadow 0.2s;
+
+  /* Prevent text from overflowing */
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
 
 .card:hover {
   transform: translateY(-4px);
