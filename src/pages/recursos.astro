@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "Recursos para prensa y redes sociales";
+const recursos = [
+  { file: "banner-blanco.png", alt: "Recurso" },
+  { file: "banner-color.png", alt: "Recurso" },
+  { file: "banner-negro.png", alt: "Recurso" },
+  { file: "logo-blanco.png", alt: "Recurso" },
+  { file: "logo-color.png", alt: "Recurso" },
+  { file: "logo-negro.png", alt: "Recurso" },
+  { file: "logo-redes-blanco.png", alt: "Recurso" },
+  { file: "logo-redes-color.png", alt: "Recurso" },
+  { file: "logo-redes-negro.png", alt: "Recurso" },
+];
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <p>Banners, logos con nombre de la red y logos de redes.</p>
+  <p>Blanco, a color y negro.</p>
+  <div class="recursos">
+    {recursos.map(recurso => (
+      <a href={`/recursos/${recurso.file}`} target="_blank" rel="noopener noreferrer">
+        <img src={`/recursos/${recurso.file}`} alt={recurso.alt} />
+      </a>
+    ))}
+  </div>
+
+  <style>
+    .recursos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+    .recursos a {
+      display: block;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .recursos a:hover {
+      transform: scale(1.05);
+    }
+    .recursos img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: white;
+      padding: 0.5rem;
+    }
+  </style>
+</BaseLayout>
