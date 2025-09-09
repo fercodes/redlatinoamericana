@@ -32,7 +32,7 @@ const { data: asesores, error: asesoresError } = await supabase
 const { data: miembros, error: miembrosError } = await supabase
   .from('miembros')
   .select('*')
-  .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes', 'YES', 'Sí', 'SÍ', 'Yes/Si', 'Yes/Sí'])
+  .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes', 'YES', 'Sí', 'SÍ', 'Yes/Si', 'Yes/Sí', 'Sí / Sim / Yes'])
   .order('full_name');
 
 if (comiteError) console.error(comiteError);

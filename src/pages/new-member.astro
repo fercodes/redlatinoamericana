@@ -1,0 +1,264 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "Formulario para nuevos miembros";
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <section class="form-section">
+    <h2>Formulario / Formulário / Form</h2>
+
+    <form id="new-member-form" enctype="multipart/form-data">
+      <!-- ✅ Mandatory fields -->
+      <div class="form-group">
+        <label for="full_name">Nombre completo / Nome completo / Full name *</label>
+        <input type="text" id="full_name" name="full_name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone_number">Teléfono / Telefone / Phone number *</label>
+        <input type="tel" id="phone_number" name="phone_number" required />
+      </div>
+
+      <div class="form-group">
+        <label for="home_country">País de origen / País de origem / Home country *</label>
+        <input type="text" id="home_country" name="home_country" required />
+      </div>
+
+      <div class="form-group">
+        <label for="city">Ciudad / Cidade / City *</label>
+        <input type="text" id="city" name="city" required />
+      </div>
+
+      <div class="form-group">
+        <label for="location">Ubicación / Localização / Location *</label>
+        <input type="text" id="location" name="location" required />
+      </div>
+
+      <div class="form-group">
+        <label for="professional_email">Correo profesional / Email profissional / Professional email *</label>
+        <input type="email" id="professional_email" name="professional_email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="profile_picture">Foto de perfil / Foto de perfil / Profile picture *</label>
+        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo / Email / Email *</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="agree_to_publish_profile">¿Publicar perfil? / Publicar perfil? / Publish profile? *</label>
+        <select id="agree_to_publish_profile" name="agree_to_publish_profile" required>
+          <option value="true">Sí / Sim / Yes</option>
+          <option value="false">No / Não / No</option>
+        </select>
+      </div>
+
+      <!-- ✅ Optional fields -->
+      <div class="form-group">
+        <label for="education">Educación / Educação / Education</label>
+        <input type="text" id="education" name="education" />
+      </div>
+
+      <div class="form-group">
+        <label for="affiliation">Afiliación / Afiliação / Affiliation</label>
+        <input type="text" id="affiliation" name="affiliation" />
+      </div>
+
+      <div class="form-group">
+        <label for="research_interests">Intereses de investigación / Interesses de pesquisa / Research interests</label>
+        <textarea id="research_interests" name="research_interests"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="links_social_media">Redes sociales / Redes sociais / Social media (link, not just username)</label>
+        <input type="url" id="links_social_media" name="links_social_media" placeholder="https://www.linkedin.com/in/alberteinstein/" />
+      </div>
+
+      <div class="form-group">
+        <label for="cv">CV (opcional) / Currículo (opcional) / CV (optional)</label>
+        <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" />
+      </div>
+
+      <div class="form-group">
+        <label for="main_motivation">Motivación principal / Motivação principal / Main motivation</label>
+        <textarea id="main_motivation" name="main_motivation"></textarea>
+      </div>
+
+      <button type="submit">Enviar / Enviar / Submit</button>
+    </form>
+
+    <p id="form-message" class="message"></p>
+  </section>
+
+  <style>
+    .form-section {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-section h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input, textarea, select {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #0070f3;
+      box-shadow: 0 0 0 2px rgba(0,112,243,0.2);
+    }
+
+    button {
+      background: #0070f3;
+      color: white;
+      padding: 0.9rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0059c1;
+    }
+
+    .message {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .form-section {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+
+  <script>
+    import { createClient } from "@supabase/supabase-js";
+
+    const supabase = createClient(
+      import.meta.env.PUBLIC_SUPABASE_URL,
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+    );
+
+    const form = document.getElementById("new-member-form");
+    const messageEl = document.getElementById("form-message");
+
+    function slugifyName(name) {
+      return name
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "_")         // spaces -> underscores
+        .replace(/[^a-z0-9_]/g, "");  // remove special chars
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      messageEl.textContent = "⏳ Enviando...";
+
+      const formData = new FormData(form);
+      const fullName = formData.get("full_name");
+      const slugName = slugifyName(fullName);
+
+      // ✅ Profile picture upload
+      const profileFile = formData.get("profile_picture");
+      const profileExt = profileFile.name.split(".").pop();
+      const profileFileName = `${slugName}.${profileExt}`;
+      const { error: profileError } = await supabase.storage
+        .from("people")
+        .upload(`miembros_foto/${profileFileName}`, profileFile, { upsert: true });
+
+      if (profileError) {
+        messageEl.textContent = "❌ Error al subir la foto de perfil.";
+        return;
+      }
+
+      // ✅ CV upload (optional)
+      let cvPath = null;
+      const cvFile = formData.get("cv");
+      if (cvFile && cvFile.size > 0) {
+        const cvExt = cvFile.name.split(".").pop();
+        const cvFileName = `${slugName}.${cvExt}`;
+        const { error: cvError } = await supabase.storage
+          .from("people")
+          .upload(`cv/${cvFileName}`, cvFile, { upsert: true });
+        if (cvError) {
+          messageEl.textContent = "❌ Error al subir el CV.";
+          return;
+        }
+        cvPath = `cv/${cvFileName}`;
+      }
+
+      // ✅ Insert row in pending_members table
+      const { error: insertError } = await supabase.from("pending_members").insert([{
+        full_name: fullName,
+        phone_number: formData.get("phone_number"),
+        home_country: formData.get("home_country"),
+        city: formData.get("city"),
+        location: formData.get("location"),
+        education: formData.get("education"),
+        affiliation: formData.get("affiliation"),
+        research_interests: formData.get("research_interests"),
+        professional_email: formData.get("professional_email"),
+        links_social_media: formData.get("links_social_media"),
+        profile_picture: `miembros_foto/${profileFileName}`,
+        cv: cvPath,
+        main_motivation: formData.get("main_motivation"),
+        email: formData.get("email"),
+        agree_to_publish_profile: formData.get("agree_to_publish_profile") === "true",
+        timestamp: new Date().toISOString()
+      }]);
+
+      if (insertError) {
+        messageEl.textContent = "❌ Error al guardar datos.";
+      } else {
+        messageEl.textContent = "✅ ¡Enviado con éxito!";
+        form.reset();
+      }
+    });
+  </script>
+</BaseLayout>
