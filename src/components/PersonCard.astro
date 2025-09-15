@@ -12,9 +12,7 @@ const imageUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${person.pro
   </div>
   {person.full_name && <h2>{person.full_name}</h2>}
   {person.cargo && <p><strong>Cargo:</strong> {person.cargo}</p>}
-  {person.phone_number && <p><strong>Número:</strong> {person.phone_number}</p>}
   {person.home_country && <p><strong>País:</strong> {person.home_country}</p>}
-  {person.city && <p><strong>Ciudad:</strong> {person.city}</p>}
   {person.location && <p><strong>Ubicación:</strong> {person.location}</p>}
   {person.education && <p><strong>Educación:</strong> {person.education}</p>}
   {person.affiliation && <p><strong>Afiliación:</strong> {person.affiliation}</p>}
