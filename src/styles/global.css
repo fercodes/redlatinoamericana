@@ -46,6 +46,7 @@ p {
   position: absolute;
   padding: 2px;
   cursor: pointer;
+  z-index: 100;
 }
 
 .hamburger .line {
@@ -54,6 +55,19 @@ p {
   height: 5px;
   margin-bottom: 10px;
   background-color: #0c2f60;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open .line:nth-child(1) {
+  transform: translateY(15px) rotate(45deg);
+}
+
+.hamburger.open .line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open .line:nth-child(3) {
+  transform: translateY(-15px) rotate(-45deg);
 }
 
 .nav-links {

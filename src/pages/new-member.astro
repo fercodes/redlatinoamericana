@@ -76,7 +76,14 @@ const supabase = createClient(
 
       <div class="form-group">
         <label for="research_interests">Intereses de investigación / Interesses de pesquisa / Research interests</label>
-        <textarea id="research_interests" name="research_interests"></textarea>
+        <select name="research_interests">
+          <option value="mercedes">Mercedes</option>
+          <option value="tesla">Tesla</option>
+          <option value="volvo">Volvo</option>
+          <option value="bmw">BMW</option>
+          <option value="mini">Mini</option>
+          <option value="ford">Ford</option>
+        </select>
       </div>
 
       <div class="form-group">
@@ -204,28 +211,29 @@ const supabase = createClient(
       const fullName = formData.get("full_name");
       const slugName = slugifyName(fullName);
 
-      // ✅ Profile picture upload
+      // ✅ Profile picture upload with unique name
       const profileFile = formData.get("profile_picture");
       const profileExt = profileFile.name.split(".").pop();
-      const profileFileName = `${slugName}.${profileExt}`;
+      const profileFileName = `${slugName}_${Date.now()}.${profileExt}`; // unique filename
       const { error: profileError } = await supabase.storage
         .from("people")
-        .upload(`miembros_foto/${profileFileName}`, profileFile, { upsert: true });
+        .upload(`miembros_foto/${profileFileName}`, profileFile);
 
       if (profileError) {
-        messageEl.textContent = "❌ Error al subir la foto de perfil.";
+        console.error("Profile upload error:", profileError);
+        messageEl.textContent = "❌ Error al subir la foto de perfil: " + profileError.message;
         return;
       }
 
-      // ✅ CV upload (optional)
+      // ✅ CV upload (optional) with unique name
       let cvPath = null;
       const cvFile = formData.get("cv");
       if (cvFile && cvFile.size > 0) {
         const cvExt = cvFile.name.split(".").pop();
-        const cvFileName = `${slugName}.${cvExt}`;
+        const cvFileName = `${slugName}_${Date.now()}.${cvExt}`; // unique filename
         const { error: cvError } = await supabase.storage
           .from("people")
-          .upload(`cv/${cvFileName}`, cvFile, { upsert: true });
+          .upload(`cv/${cvFileName}`, cvFile);
         if (cvError) {
           messageEl.textContent = "❌ Error al subir el CV.";
           return;
