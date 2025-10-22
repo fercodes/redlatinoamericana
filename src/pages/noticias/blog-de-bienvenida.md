@@ -23,3 +23,7 @@ Creemos que la ciencia no tiene sentido si no se hace en comunidad, desde la inc
 Esta página web contendrá toda la información relevante sobre nuestra Red: encontrarás recursos, noticias, actividades, entradas de blog, información de Redes Nacionales y muchas otras cosas más para tu completa disposición; ya que creemos que tu eres una pieza clave para seguir construyendo esta prometedora comunidad Latinoamericana.
 
 Únete, comparte y sueña con nosotros. ¡El viaje apenas comienza!
+
+<img src="/blog/bienvenida1.jpg" alt="" style="max-width:100%; height:auto;">
+
+<img src="/blog/bienvenida2.jpg" alt="" style="max-width:100%; height:auto;">
