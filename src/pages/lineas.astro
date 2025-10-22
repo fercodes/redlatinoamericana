@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const pageTitle = "Líneas de investigación";
+
+const topics = [
+  "Geología planetaria",
+  "Geofísica",
+  "Geoquímica",
+  "Astrobiología",
+  "Habitabilidad planetaria",
+  "Astroquímica",
+  "Astronomía",
+  "Astrofísica",
+  "Meteoritos",
+  "Biología espacial",
+  "Atmósferas planetarias",
+  "Detección de exoplanetas",
+  "Caracterización de exoplanetas",
+  "Química atmosférica",
+  "Meteorología y climatología",
+  "Clima espacial",
+  "Sensoriamento remoto",
+  "Arquitectura espacial",
+  "Instrumentación",
+  "Rovers/Robótica/Cubesats/Nanosatélites",
+  "Derecho aeroespacial",
+  "Microgravedad",
+  "Medicina aeroespacial",
+  "Ingeniería aeroespacial",
+];
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <ul>
+    {topics.map((topic) => (
+      <li>
+        <a href={`/lineas/${encodeURIComponent(topic)}`}>
+          <h2>{topic}</h2>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

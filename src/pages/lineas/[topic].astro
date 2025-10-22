@@ -1,0 +1,146 @@
+---
+export const prerender = false; // SSR route
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { supabase } from "../../lib/supabaseClient";
+
+// 🔹 Normalize helper (remove accents, lowercase)
+const normalize = (s = "") =>
+  s
+    .normalize?.("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .trim();
+
+// 🔹 Get topic from URL
+const rawTopic = Astro.params.topic || "";
+const decodedTopic = decodeURIComponent(rawTopic);
+const normTopic = normalize(decodedTopic);
+
+// 🔹 Spanish → English translations
+const translationsMap = {
+  "geologia planetaria": ["planetary geology"],
+  "geofisica": ["geophysics"],
+  "geoquimica": ["geochemistry"],
+  "astrobiologia": ["astrobiology"],
+  "habitabilidad planetaria": ["planetary habitability"],
+  "astroquimica": ["astrochemistry"],
+  "astronomia": ["astronomy"],
+  "astrofisica": ["astrophysics"],
+  "meteoritos": ["meteorites"],
+  "biologia espacial": ["space biology"],
+  "atmosferas planetarias": ["planetary atmospheres"],
+  "deteccion de exoplanetas": ["exoplanets"],
+  "caracterizacion de exoplanetas": ["exoplanet characterization"],
+  "quimica atmosferica": ["atmospheric chemistry"],
+  "meteorologia y climatologia": ["meteorology"],
+  "clima espacial": ["space weather"],
+  "sensoriamento remoto": ["remote sensing"],
+  "arquitectura espacial": ["space architecture"],
+  "instrumentacion": ["instrumentation"],
+  "rovers robotica cubesats nanosatelites": ["robotics", "cubesats", "nanosatellites"],
+  "derecho aeroespacial": ["space law"],
+  "microgravedad": ["microgravity"],
+  "medicina aeroespacial": ["aerospace medicine"],
+  "ingenieria aeroespacial": ["aerospace engineering"],
+};
+
+// 🔹 Build list of possible matches
+const translations = translationsMap[normTopic] || [];
+const candidates = [
+  decodedTopic,
+  normTopic,
+  ...translations,
+  ...translations.map((t) => normalize(t)),
+];
+
+// 🔹 Build OR filter for Supabase
+const buildOrExpr = (field, terms) =>
+  terms.map((t) => `${field}.ilike.%${t}%`).join(",");
+
+let miembros = [];
+let queryError = null;
+
+try {
+  const orExpr = buildOrExpr("research_interests", candidates);
+  const { data, error } = await supabase
+    .from("miembros") // ✅ correct table name
+    .select("*")
+    .or(orExpr);
+
+  if (error) {
+    console.error("Supabase error:", error);
+    queryError = error;
+  } else {
+    miembros = data;
+  }
+} catch (err) {
+  console.error("Unexpected error:", err);
+  queryError = err;
+}
+---
+
+<BaseLayout pageTitle={decodedTopic || "Línea de investigación"}>
+  <h1>{decodedTopic || "Línea desconocida"}</h1>
+
+  {miembros.length === 0 ? (
+    <>
+      <p><strong>No se encontraron miembros con este interés.</strong></p>
+      {queryError ? <pre style="color:red;">Error: {String(queryError.message || queryError)}</pre> : null}
+    </>
+  ) : (
+    <div id="miembros" class="tab-section">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre completo</th>
+              <th>País</th>
+              <th>Ciudad</th>
+              <th>Educación</th>
+              <th>Afiliación</th>
+              <th>Intereses de investigación</th>
+              <th>Email profesional</th>
+            </tr>
+          </thead>
+          <tbody>
+            {miembros.map((person) => (
+              <tr>
+                <td>{person.full_name || "—"}</td>
+                <td>{person.home_country || "—"}</td>
+                <td>{person.city || "—"}</td>
+                <td>{person.education || "—"}</td>
+                <td>{person.affiliation || "—"}</td>
+                <td>{person.research_interests || "—"}</td>
+                <td>{person.professional_email || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )}
+
+
+  <style>
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+    }
+    th {
+      background: #f4f4f4;
+      text-align: left;
+    }
+  </style>
+</BaseLayout>
