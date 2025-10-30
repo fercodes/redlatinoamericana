@@ -134,7 +134,15 @@ if (miembrosError) console.error(miembrosError);
       <!-- Miembros Table -->
       <div id="miembros" class="tab-section hidden">
         <div class="table-container">
-          <table>
+          <input
+            type="text"
+            id="searchMiembros"
+            placeholder="Buscar por nombre, país, afiliación..."
+            style="margin-bottom: 1rem; padding: 0.5rem; width: 100%; max-width: 400px;"
+          />
+          <p id="noResults" style="display:none; margin-top:1rem;">No se encontraron resultados.</p>
+
+          <table id="miembrosTable">
             <thead>
               <tr>
                 <th>Nombre completo</th>
@@ -180,6 +188,25 @@ if (miembrosError) console.error(miembrosError);
         const section = document.getElementById(button.dataset.tab!);
         if (section) section.classList.remove("hidden");
       });
+    });
+
+    // --- Miembros search filtering ---
+    const searchInput = document.getElementById("searchMiembros");
+    const miembrosTable = document.getElementById("miembrosTable");
+    const rows = miembrosTable.querySelectorAll("tbody tr");
+    const noResults = document.getElementById("noResults");
+
+    searchInput.addEventListener("input", (e) => {
+      const value = e.target.value.toLowerCase();
+      let visibleCount = 0;
+
+      rows.forEach((row) => {
+        const match = row.textContent.toLowerCase().includes(value);
+        row.style.display = match ? "" : "none";
+        if (match) visibleCount++;
+      });
+
+      noResults.style.display = visibleCount === 0 ? "block" : "none";
     });
   </script>
 
