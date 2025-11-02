@@ -13,28 +13,55 @@ import Social from './Social.astro';
     background-size: cover;
     min-height: 220px;
   }
-  .social-group {
+
+  .social-icons {
     display: flex;
     gap: 1rem;
+  }
+
+  .social-group {
+    display: flex;
+    gap: 2rem;
   }
 
   img {
     height: 140px;
   }
 
+  a.join-btn {
+    padding: 0.6rem 1.2rem;
+    color: black;
+    background-color: #e3be23;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 20px;
+  }
+
   @media screen and (max-width: 635px) {
     img {
       height: 65px;
     }
-  }
 
+    .social-group {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    a.join-btn {
+      padding: 0.3rem 1.2rem;
+    }
+  }
 </style>
 
 <banner>
   <img src="/logo_blanco.png" alt="Logo" />
   <div class="social-group">
-    <Social platform="facebook" username="profile.php?id=61577709521939" />
-    <Social platform="instagram" username="redlatam_csplanetyespaciales" />
-    <Social platform="linkedin" username="red-latinoamericana-ciencias-planetarias-yexploraci%C3%B3n-espacial-52467b375" />
+    <div class="social-icons">
+      <Social platform="facebook" username="profile.php?id=61577709521939" />
+      <Social platform="instagram" username="redlatam_csplanetyespaciales" />
+      <Social platform="linkedin" username="red-latinoamericana-ciencias-planetarias-yexploraci%C3%B3n-espacial-52467b375" />
+    </div>
+    <a href="/new-member" class="join-btn">¡Únete a la red!</a>
   </div>
 </banner>

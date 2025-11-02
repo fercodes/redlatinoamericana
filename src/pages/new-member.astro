@@ -1,12 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "Formulario para nuevos miembros";
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-);
 ---
 
 <BaseLayout pageTitle={pageTitle}>
@@ -45,10 +39,13 @@ const supabase = createClient(
         <input type="email" id="professional_email" name="professional_email" required />
       </div>
 
+      <!-- ❌ Commented out: Profile picture upload -->
+      <!--
       <div class="form-group">
         <label for="profile_picture">Foto de perfil / Foto de perfil / Profile picture *</label>
-        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" required />
+        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" />
       </div>
+      -->
 
       <div class="form-group">
         <label for="email">Correo / Email / Email *</label>
@@ -75,15 +72,10 @@ const supabase = createClient(
       </div>
 
       <div class="form-group">
-        <label for="research_interests">Intereses de investigación / Interesses de pesquisa / Research interests</label>
-        <select name="research_interests">
-          <option value="mercedes">Mercedes</option>
-          <option value="tesla">Tesla</option>
-          <option value="volvo">Volvo</option>
-          <option value="bmw">BMW</option>
-          <option value="mini">Mini</option>
-          <option value="ford">Ford</option>
-        </select>
+        <label for="research_interests">
+          Intereses de investigación / Interesses de pesquisa / Research interests
+        </label>
+        <select name="research_interests" id="research_interests"></select>
       </div>
 
       <div class="form-group">
@@ -91,10 +83,13 @@ const supabase = createClient(
         <input type="url" id="links_social_media" name="links_social_media" placeholder="https://www.linkedin.com/in/alberteinstein/" />
       </div>
 
+      <!-- ❌ Commented out: CV upload -->
+      <!--
       <div class="form-group">
         <label for="cv">CV (opcional) / Currículo (opcional) / CV (optional)</label>
         <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" />
       </div>
+      -->
 
       <div class="form-group">
         <label for="main_motivation">Motivación principal / Motivação principal / Main motivation</label>
@@ -194,13 +189,16 @@ const supabase = createClient(
 
     const form = document.getElementById("new-member-form");
     const messageEl = document.getElementById("form-message");
+    if (!form || !messageEl) {
+      console.error("Form or message element not found");
+    }
 
     function slugifyName(name) {
       return name
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, "_")         // spaces -> underscores
-        .replace(/[^a-z0-9_]/g, "");  // remove special chars
+        .replace(/\s+/g, "_")         
+        .replace(/[^a-z0-9_]/g, "");  
     }
 
     form.addEventListener("submit", async (e) => {
@@ -211,26 +209,13 @@ const supabase = createClient(
       const fullName = formData.get("full_name");
       const slugName = slugifyName(fullName);
 
-      // ✅ Profile picture upload with unique name
-      const profileFile = formData.get("profile_picture");
-      const profileExt = profileFile.name.split(".").pop();
-      const profileFileName = `${slugName}_${Date.now()}.${profileExt}`; // unique filename
-      const { error: profileError } = await supabase.storage
-        .from("people")
-        .upload(`miembros_foto/${profileFileName}`, profileFile);
-
-      if (profileError) {
-        console.error("Profile upload error:", profileError);
-        messageEl.textContent = "❌ Error al subir la foto de perfil: " + profileError.message;
-        return;
-      }
-
-      // ✅ CV upload (optional) with unique name
+      // ❌ Commented out: CV upload and storage logic
+      /*
       let cvPath = null;
       const cvFile = formData.get("cv");
       if (cvFile && cvFile.size > 0) {
         const cvExt = cvFile.name.split(".").pop();
-        const cvFileName = `${slugName}_${Date.now()}.${cvExt}`; // unique filename
+        const cvFileName = `${slugName}_${Date.now()}.${cvExt}`;
         const { error: cvError } = await supabase.storage
           .from("people")
           .upload(`cv/${cvFileName}`, cvFile);
@@ -240,6 +225,7 @@ const supabase = createClient(
         }
         cvPath = `cv/${cvFileName}`;
       }
+      */
 
       // ✅ Insert row in pending_members table
       const { error: insertError } = await supabase.from("pending_members").insert([{
@@ -253,8 +239,7 @@ const supabase = createClient(
         research_interests: formData.get("research_interests"),
         professional_email: formData.get("professional_email"),
         links_social_media: formData.get("links_social_media"),
-        profile_picture: `miembros_foto/${profileFileName}`,
-        cv: cvPath,
+        // cv: cvPath,  // ❌ Commented out
         main_motivation: formData.get("main_motivation"),
         email: formData.get("email"),
         agree_to_publish_profile: formData.get("agree_to_publish_profile") === "true",
@@ -267,6 +252,45 @@ const supabase = createClient(
         messageEl.textContent = "✅ ¡Enviado con éxito!";
         form.reset();
       }
+    });
+
+    // Show research interests options in different languages
+    const translations = {
+      es: [
+        "Geología planetaria","Geofísica","Geoquímica","Astrobiología","Habitabilidad planetaria",
+        "Astroquímica","Astronomía","Astrofísica","Meteoritos","Biología espacial",
+        "Atmósferas planetarias","Detección de exoplanetas","Caracterización de exoplanetas",
+        "Química atmosférica","Meteorología y climatología","Clima espacial","Sensoriamento remoto",
+        "Arquitectura espacial","Instrumentación","Rovers / Robótica / Cubesats / Nanosatélites",
+        "Derecho aeroespacial","Microgravedad","Medicina aeroespacial","Ingeniería aeroespacial"
+      ],
+      pt: [
+        "Geologia planetária","Geofísica","Geoquímica","Astrobiologia","Habitabilidade planetária",
+        "Astroquímica","Astronomia","Astrofísica","Meteoritos","Biologia espacial",
+        "Atmosferas planetárias","Detecção de exoplanetas","Caracterização de exoplanetas",
+        "Química atmosférica","Meteorologia e climatologia","Clima espacial","Sensoriamento remoto",
+        "Arquitetura espacial","Instrumentação","Rovers / Robótica / Cubesats / Nanosatélites",
+        "Direito aeroespacial","Microgravidade","Medicina aeroespacial","Engenharia aeroespacial"
+      ],
+      en: [
+        "Planetary Geology","Geophysics","Geochemistry","Astrobiology","Planetary Habitability",
+        "Astrochemistry","Astronomy","Astrophysics","Meteorites","Space Biology",
+        "Planetary Atmospheres","Exoplanet Detection","Exoplanet Characterization",
+        "Atmospheric Chemistry","Meteorology and Climatology","Space Weather","Remote Sensing",
+        "Space Architecture","Instrumentation","Rovers / Robotics / Cubesats / Nanosatellites",
+        "Space Law","Microgravity","Aerospace Medicine","Aerospace Engineering"
+      ]
+    };
+
+    const userLang = navigator.language.startsWith("es") ? "es" :
+                    navigator.language.startsWith("pt") ? "pt" : "en";
+
+    const select = document.getElementById("research_interests");
+    translations[userLang].forEach(topic => {
+      const option = document.createElement("option");
+      option.value = topic.toLowerCase().replace(/\s+/g, "-");
+      option.textContent = topic;
+      select.appendChild(option);
     });
   </script>
 </BaseLayout>
