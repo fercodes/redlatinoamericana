@@ -28,11 +28,11 @@ const { data: asesores, error: asesoresError } = await supabase
   .select('*')
   .order('full_name');
 
-// Fetch Miembros (server-side initial render; client script will replace/update it)
+// Fetch Miembros
 const { data: miembros, error: miembrosError } = await supabase
   .from('miembros')
   .select('*')
-  .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes', 'YES', 'Sí', 'SÍ', 'Yes/Si', 'Yes/Sí', 'Sí / Sim / Yes'])
+  .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes', 'YES', 'Sí', 'SÍ', 'Yes/Si', 'Yes/Sí', 'Sí / Sim / Yes', 'true', 'True', 'TRUE'])
   .order('full_name');
 
 if (comiteError) console.error(comiteError);
@@ -131,154 +131,83 @@ if (miembrosError) console.error(miembrosError);
     </div>
   </div>
 
-  <!-- Miembros Table (initial rows rendered server-side; will be replaced/kept by client script) -->
-  <div id="miembros" class="tab-section hidden">
-    <div class="table-container">
-      <input
-        type="text"
-        id="searchMiembros"
-        placeholder="Buscar por nombre, país, afiliación..."
-        style="margin-bottom: 1rem; padding: 0.5rem; width: 100%; max-width: 400px;"
-      />
-      <p id="noResults" style="display:none; margin-top:1rem;">No se encontraron resultados.</p>
+      <!-- Miembros Table -->
+      <div id="miembros" class="tab-section hidden">
+        <div class="table-container">
+          <input
+            type="text"
+            id="searchMiembros"
+            placeholder="Buscar por nombre, país, afiliación..."
+            style="margin-bottom: 1rem; padding: 0.5rem; width: 100%; max-width: 400px;"
+          />
+          <p id="noResults" style="display:none; margin-top:1rem;">No se encontraron resultados.</p>
 
-      <table id="miembrosTable">
-        <thead>
-          <tr>
-            <th>Nombre completo</th>
-            <th>País</th>
-            <th>Ciudad</th>
-            <th>Educación</th>
-            <th>Afiliación</th>
-            <th>Intereses de investigación</th>
-            <th>Email profesional</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(miembros ?? []).map(person => (
-            <tr>
-              <td>{person.full_name}</td>
-              <td>{person.home_country}</td>
-              <td>{person.city}</td>
-              <td>{person.education}</td>
-              <td>{person.affiliation}</td>
-              <td>{person.research_interests}</td>
-              <td>{person.professional_email}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <table id="miembrosTable">
+            <thead>
+              <tr>
+                <th>Nombre completo</th>
+                <th>País</th>
+                <th>Ciudad</th>
+                <th>Educación</th>
+                <th>Afiliación</th>
+                <th>Intereses de investigación</th>
+                <th>Email profesional</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(miembros ?? []).map(person => (
+                <tr>
+                  <td>{person.full_name}</td>
+                  <td>{person.home_country}</td>
+                  <td>{person.city}</td>
+                  <td>{person.education}</td>
+                  <td>{person.affiliation}</td>
+                  <td>{person.research_interests}</td>
+                  <td>{person.professional_email}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Client-side scripts: tabs + live miembros (realtime) -->
-  <script type="module">
-    // ----- Tabs behavior (works after DOM is loaded) -----
+  <script>
     document.querySelectorAll(".tabs button").forEach((btn) => {
-      btn.addEventListener("click", () => {
+      const button = btn as HTMLElement; // <- cast to HTMLElement
+      button.addEventListener("click", () => {
         // Remove active class from all buttons
         document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+        button.classList.add("active");
 
         // Hide all sections
         document.querySelectorAll(".tab-section").forEach(s => s.classList.add("hidden"));
 
         // Show selected section
-        const section = document.getElementById(btn.dataset.tab);
+        const section = document.getElementById(button.dataset.tab!);
         if (section) section.classList.remove("hidden");
       });
     });
 
-    // ----- Live Miembros (fetch + realtime) -----
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    // --- Miembros search filtering ---
+    const searchInput = document.getElementById("searchMiembros");
+    const miembrosTable = document.getElementById("miembrosTable");
+    const rows = miembrosTable.querySelectorAll("tbody tr");
+    const noResults = document.getElementById("noResults");
 
-    const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
-    const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      console.error('Missing PUBLIC_SUPABASE_URL or PUBLIC_SUPABASE_ANON_KEY environment variables.');
-    }
-
-    const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const tableBody = document.querySelector('#miembrosTable tbody');
-    const searchInput = document.getElementById('searchMiembros');
-    const noResults = document.getElementById('noResults');
-
-    // Values allowed in agree_to_publish_profile (keep synchronized with server filter)
-    const PUBLISH_VALUES = ['Yes','Si','Si/Yes','YES','Sí','SÍ','Yes/Si','Yes/Sí','Sí / Sim / Yes'];
-
-    function renderRows(rows){
-      // Simple safe escaping for text content
-      const escape = (s) => (s === null || s === undefined) ? '' : String(s);
-      tableBody.innerHTML = (rows || []).map(p => `
-        <tr>
-          <td>${escape(p.full_name)}</td>
-          <td>${escape(p.home_country)}</td>
-          <td>${escape(p.city)}</td>
-          <td>${escape(p.education)}</td>
-          <td>${escape(p.affiliation)}</td>
-          <td>${escape(p.research_interests)}</td>
-          <td>${escape(p.professional_email)}</td>
-        </tr>
-      `).join('');
-      applyFilter(); // apply the current search query after rendering
-    }
-
-    async function loadMiembros() {
-      try {
-        const { data, error } = await client
-          .from('miembros')
-          .select('*')
-          .in('agree_to_publish_profile', PUBLISH_VALUES)
-          .order('full_name');
-
-        if (error) {
-          console.error('Supabase fetch error:', error);
-          return;
-        }
-
-        renderRows(data || []);
-      } catch (err) {
-        console.error('Unexpected error loading miembros:', err);
-      }
-    }
-
-    function applyFilter() {
-      const value = (searchInput?.value || '').toLowerCase();
-      const rows = Array.from(tableBody.querySelectorAll('tr'));
+    searchInput.addEventListener("input", (e) => {
+      const value = e.target.value.toLowerCase();
       let visibleCount = 0;
 
       rows.forEach((row) => {
         const match = row.textContent.toLowerCase().includes(value);
-        row.style.display = match ? '' : 'none';
+        row.style.display = match ? "" : "none";
         if (match) visibleCount++;
       });
 
-      if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
-
-    if (searchInput) searchInput.addEventListener('input', applyFilter);
-
-    // Subscribe to realtime changes
-    function subscribeRealtime() {
-      try {
-        client
-          .channel('public:miembros')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'miembros' }, (payload) => {
-            // Simple strategy: reload the whole list on any change
-            // (robust and easy to maintain)
-            loadMiembros();
-          })
-          .subscribe();
-      } catch (err) {
-        console.error('Realtime subscription error:', err);
-      }
-    }
-
-    // Start: load initial data and subscribe to updates
-    loadMiembros();
-    subscribeRealtime();
+      noResults.style.display = visibleCount === 0 ? "block" : "none";
+    });
   </script>
 
   <style>
