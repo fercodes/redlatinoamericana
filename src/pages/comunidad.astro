@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "Nuestra Comunidad";
 import PersonCard from '../components/PersonCard.astro';
+import OrganizationCard from '../components/OrganizationCard.astro';
 import { supabase } from '../lib/supabaseClient';
 
 // Fetch Comite Directivo
@@ -35,11 +36,18 @@ const { data: miembros, error: miembrosError } = await supabase
   .in('agree_to_publish_profile', ['Yes', 'Si', 'Si/Yes', 'YES', 'Sí', 'SÍ', 'Yes/Si', 'Yes/Sí', 'Sí / Sim / Yes', 'true', 'True', 'TRUE'])
   .order('full_name');
 
+// Fetch Organizaciones Aliadas
+const { data: organizacionesAliadas, error: organizacionesAliadasError } = await supabase
+  .from('organizaciones_aliadas')
+  .select('*')
+  .order('id');
+
 if (comiteError) console.error(comiteError);
 if (fundadoresError) console.error(fundadoresError);
 if (puntosError) console.error(puntosError);
 if (asesoresError) console.error(asesoresError);
 if (miembrosError) console.error(miembrosError);
+if (organizacionesAliadasError) console.error(organizacionesAliadasError);
 ---
 
 <BaseLayout pageTitle={pageTitle}>
@@ -51,6 +59,7 @@ if (miembrosError) console.error(miembrosError);
       <button data-tab="puntos">Puntos Nacionales de Contacto</button>
       <button data-tab="asesores">Asesores Internacionales</button>
       <button data-tab="miembros">Miembros</button>
+      <button data-tab="organizacionesAliadas">Organizaciones Aliadas</button>
     </div>
 
     <!-- Tab Sections -->
@@ -170,6 +179,16 @@ if (miembrosError) console.error(miembrosError);
           </table>
         </div>
       </div>
+
+      <!-- Organizaciones aliadas -->
+      <div id="organizacionesAliadas" class="tab-section hidden">
+        <div class="grid">
+          {organizacionesAliadas?.map(organizacion => (
+            <OrganizationCard org={organizacion} />
+          ))}
+        </div>
+      </div>
+
     </div>
   </div>
 
