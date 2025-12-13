@@ -39,14 +39,6 @@ const pageTitle = "Formulario para nuevos miembros";
         <input type="email" id="professional_email" name="professional_email" required />
       </div>
 
-      <!-- ❌ Commented out: Profile picture upload -->
-      <!--
-      <div class="form-group">
-        <label for="profile_picture">Foto de perfil / Foto de perfil / Profile picture *</label>
-        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" />
-      </div>
-      -->
-
       <div class="form-group">
         <label for="email">Correo / Email / Email *</label>
         <input type="email" id="email" name="email" required />
@@ -71,25 +63,23 @@ const pageTitle = "Formulario para nuevos miembros";
         <input type="text" id="affiliation" name="affiliation" />
       </div>
 
+      <!-- ✅ CHECKBOX-BASED RESEARCH INTERESTS -->
       <div class="form-group">
-        <label for="research_interests">
+        <label>
           Intereses de investigación / Interesses de pesquisa / Research interests
         </label>
-        <select name="research_interests" id="research_interests"></select>
+        <div id="research_interests_container" class="checkbox-container"></div>
       </div>
 
       <div class="form-group">
         <label for="links_social_media">Redes sociales / Redes sociais / Social media (link, not just username)</label>
-        <input type="url" id="links_social_media" name="links_social_media" placeholder="https://www.linkedin.com/in/alberteinstein/" />
+        <input
+          type="url"
+          id="links_social_media"
+          name="links_social_media"
+          placeholder="https://www.linkedin.com/in/alberteinstein/"
+        />
       </div>
-
-      <!-- ❌ Commented out: CV upload -->
-      <!--
-      <div class="form-group">
-        <label for="cv">CV (opcional) / Currículo (opcional) / CV (optional)</label>
-        <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" />
-      </div>
-      -->
 
       <div class="form-group">
         <label for="main_motivation">Motivación principal / Motivação principal / Main motivation</label>
@@ -141,13 +131,6 @@ const pageTitle = "Formulario para nuevos miembros";
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 1rem;
-      transition: border-color 0.2s;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #0070f3;
-      box-shadow: 0 0 0 2px rgba(0,112,243,0.2);
     }
 
     button {
@@ -158,11 +141,6 @@ const pageTitle = "Formulario para nuevos miembros";
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    button:hover {
-      background: #0059c1;
     }
 
     .message {
@@ -171,11 +149,26 @@ const pageTitle = "Formulario para nuevos miembros";
       font-weight: 500;
     }
 
-    @media (max-width: 600px) {
-      .form-section {
-        margin: 1rem;
-        padding: 1.5rem;
-      }
+    .checkbox-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .checkbox-container label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #f5f5f5;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
     }
   </style>
 
@@ -189,64 +182,38 @@ const pageTitle = "Formulario para nuevos miembros";
 
     const form = document.getElementById("new-member-form");
     const messageEl = document.getElementById("form-message");
-    if (!form || !messageEl) {
-      console.error("Form or message element not found");
-    }
-
-    function slugifyName(name) {
-      return name
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, "_")         
-        .replace(/[^a-z0-9_]/g, "");  
-    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       messageEl.textContent = "⏳ Enviando...";
 
       const formData = new FormData(form);
-      const fullName = formData.get("full_name");
-      const slugName = slugifyName(fullName);
 
-      // ❌ Commented out: CV upload and storage logic
-      /*
-      let cvPath = null;
-      const cvFile = formData.get("cv");
-      if (cvFile && cvFile.size > 0) {
-        const cvExt = cvFile.name.split(".").pop();
-        const cvFileName = `${slugName}_${Date.now()}.${cvExt}`;
-        const { error: cvError } = await supabase.storage
-          .from("people")
-          .upload(`cv/${cvFileName}`, cvFile);
-        if (cvError) {
-          messageEl.textContent = "❌ Error al subir el CV.";
-          return;
-        }
-        cvPath = `cv/${cvFileName}`;
-      }
-      */
+      // ✅ NEW: convert checkboxes → comma-separated string
+      const interestsArray = formData.getAll("research_interests");
+      const researchInterestsString = interestsArray
+        .map(v => v.replace(/-/g, " "))
+        .map(v => v.charAt(0).toUpperCase() + v.slice(1))
+        .join(", ");
 
-      // ✅ Insert row in pending_members table
-      const { error: insertError } = await supabase.from("pending_members").insert([{
-        full_name: fullName,
+      const { error } = await supabase.from("pending_members").insert([{
+        full_name: formData.get("full_name"),
         phone_number: formData.get("phone_number"),
         home_country: formData.get("home_country"),
         city: formData.get("city"),
         location: formData.get("location"),
         education: formData.get("education"),
         affiliation: formData.get("affiliation"),
-        research_interests: formData.get("research_interests"),
+        research_interests: researchInterestsString, // ✅ STRING
         professional_email: formData.get("professional_email"),
         links_social_media: formData.get("links_social_media"),
-        // cv: cvPath,  // ❌ Commented out
         main_motivation: formData.get("main_motivation"),
         email: formData.get("email"),
         agree_to_publish_profile: formData.get("agree_to_publish_profile") === "true",
         timestamp: new Date().toISOString()
       }]);
 
-      if (insertError) {
+      if (error) {
         messageEl.textContent = "❌ Error al guardar datos.";
       } else {
         messageEl.textContent = "✅ ¡Enviado con éxito!";
@@ -254,7 +221,7 @@ const pageTitle = "Formulario para nuevos miembros";
       }
     });
 
-    // Show research interests options in different languages
+    // Research interests (checkboxes)
     const translations = {
       es: [
         "Geología planetaria","Geofísica","Geoquímica","Astrobiología","Habitabilidad planetaria",
@@ -283,14 +250,21 @@ const pageTitle = "Formulario para nuevos miembros";
     };
 
     const userLang = navigator.language.startsWith("es") ? "es" :
-                    navigator.language.startsWith("pt") ? "pt" : "en";
+                     navigator.language.startsWith("pt") ? "pt" : "en";
 
-    const select = document.getElementById("research_interests");
+    const container = document.getElementById("research_interests_container");
+
     translations[userLang].forEach(topic => {
-      const option = document.createElement("option");
-      option.value = topic.toLowerCase().replace(/\s+/g, "-");
-      option.textContent = topic;
-      select.appendChild(option);
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+
+      checkbox.type = "checkbox";
+      checkbox.name = "research_interests";
+      checkbox.value = topic.toLowerCase().replace(/\s+/g, "-");
+
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(topic));
+      container.appendChild(label);
     });
   </script>
 </BaseLayout>
