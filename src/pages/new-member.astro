@@ -149,6 +149,12 @@ const pageTitle = "Formulario para nuevos miembros";
       font-weight: 500;
     }
 
+    .message img {
+      max-width: 200px;
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+
     .checkbox-container {
       display: flex;
       flex-wrap: wrap;
@@ -170,6 +176,14 @@ const pageTitle = "Formulario para nuevos miembros";
       cursor: pointer;
       font-size: 0.9rem;
     }
+
+    .grupo-img {
+      width: 60%;
+      max-width: 240px;
+      height: auto;
+      display: block;
+      margin: 1rem auto;
+    }
   </style>
 
   <script>
@@ -189,7 +203,6 @@ const pageTitle = "Formulario para nuevos miembros";
 
       const formData = new FormData(form);
 
-      // ✅ NEW: convert checkboxes → comma-separated string
       const interestsArray = formData.getAll("research_interests");
       const researchInterestsString = interestsArray
         .map(v => v.replace(/-/g, " "))
@@ -204,7 +217,7 @@ const pageTitle = "Formulario para nuevos miembros";
         location: formData.get("location"),
         education: formData.get("education"),
         affiliation: formData.get("affiliation"),
-        research_interests: researchInterestsString, // ✅ STRING
+        research_interests: researchInterestsString,
         professional_email: formData.get("professional_email"),
         links_social_media: formData.get("links_social_media"),
         main_motivation: formData.get("main_motivation"),
@@ -216,7 +229,14 @@ const pageTitle = "Formulario para nuevos miembros";
       if (error) {
         messageEl.textContent = "❌ Error al guardar datos.";
       } else {
-        messageEl.textContent = "✅ ¡Enviado con éxito!";
+        messageEl.innerHTML = `
+          ✅ ¡Enviado con éxito!<br/><br/>
+          <a href="https://chat.whatsapp.com/EASjSLEiLQ0GWepTBZJuGQ?mode=wwt" target="_blank" rel="noopener noreferrer">
+            Únete al grupo de WhatsApp
+          </a><br/>
+          <img src="/grupo.jpg" class="grupo-img" width="240px" height="auto" />
+
+        `;
         form.reset();
       }
     });
