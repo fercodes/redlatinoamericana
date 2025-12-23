@@ -29,3 +29,7 @@ En definitiva, al fomentar la integración y la interdisciplinariedad, estas red
 <img src="/blog/encuentro-redes2.png" alt="Description" style="max-width:100%; height:auto;">
 
 *Figura 2. 1er Encuentro de Redes.*
+
+*Karen Itzel Reyes Ayala*
+
+*Vicepresidenta de la RLCPEE*
