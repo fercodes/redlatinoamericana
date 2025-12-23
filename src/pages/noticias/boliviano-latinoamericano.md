@@ -55,4 +55,5 @@ Este es solo el comienzo. La Red Latinoamericana de Ciencias Planetarias y Explo
 Mi compromiso sigue siendo el mismo: abrir caminos, formar puentes y asegurar que ningún joven latinoamericano vuelva a sentir que el espacio es un sueño lejano.
 
 *Nicole Jimeno Ruiz*
+
 *Fundadora de la Red Boliviana y Red Latinoamericana de Ciencias Planetarias y Exploración Espacial*
