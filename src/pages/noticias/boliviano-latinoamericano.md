@@ -32,7 +32,7 @@ Nos dimos cuenta de que no estábamos solos en la falta de espacios dedicados a 
 
 Y así, sin darnos cuenta, lo que empezó como una iniciativa boliviana se transformó en un proyecto latinoamericano.
 
-<img src="/blog/boliviano-latinoamericano3.jpg" alt="Description" style="max-width:100%; height:auto;">
+<img src="/blog/boliviano-latinoamericano3.png" alt="Description" style="max-width:100%; height:auto;">
 
 *La primera imagen corresponde a un taller regional de análisis de datos en ciencias planetarias-COSPAR, que reunió a investigadores y estudiantes de varios países latinoamericanos para formarse y colaborar en torno a distintas áreas de la exploración planetaria. La segunda imagen muestra la reunión latinoamericana organizada por Europlanet, un espacio en el que pude conectar con colegas de toda la región y confirmar que no estábamos solos: había una comunidad creciente con las mismas ganas de construir, unificar y fortalecer las ciencias planetarias en Latinoamérica.*
 
