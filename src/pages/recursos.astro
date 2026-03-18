@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const pageTitle = "Recursos para prensa y redes sociales";
+const pageTitle = "Recursos para prensa, redes sociales, y miembros";
 const recursos = [
   { file: "banner-blanco.png", alt: "Recurso" },
   { file: "banner-color.png", alt: "Recurso" },
@@ -23,6 +23,11 @@ const recursos = [
         <img src={`/recursos/${recurso.file}`} alt={recurso.alt} />
       </a>
     ))}
+
+    <!-- PDF -->
+      <a href="/Código de Conducta.pdf" target="_blank" rel="noopener noreferrer">
+        📄 Código de Conducta
+      </a>
   </div>
 
   <style>
