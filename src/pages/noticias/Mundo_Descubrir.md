@@ -32,4 +32,5 @@ Así que, sin más, damos la bienvenida a  **Mundos por descubrir**, nuestra ave
 <img src="/blog/Mundos3.png" alt="Description" style="max-width:100%; height:auto;">
 
 *Valeria Calderón Pérez*
+
 *Fundadora de la Red Costarricense de ciencias planetarias y exploración espacial.*
