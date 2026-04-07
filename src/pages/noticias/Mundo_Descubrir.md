@@ -3,7 +3,7 @@ layout: ../../layouts/MarkdownPostLayout.astro
 title: 'Un año de exploración: Mundos por Descubrir'
 pubDate: 2026-04-07
 description: ''
-author: 'Red Latinoamericana de Ciencias Planetarias y Exploración Espacial'
+author: 'Valeria Calderón Pérez'
 image:
   url: ''
   alt: ''
