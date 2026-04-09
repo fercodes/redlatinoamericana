@@ -88,13 +88,16 @@ const pageTitle = "Formulario para nuevos miembros";
 
       <!-- ✅ Checkbox para aceptar leer el PDF -->
       <div class="form-group">
+        <label>Código de Conducta</label>
+          <div id="pdf-viewer-container" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+            <iframe src="/Código de Conducta.pdf" width="100%" height="500px" frameborder="0"></iframe>
+          </div>
+
         <label>
-          <input type="checkbox" name="accept_pdf" required />
-          He leído y aceptado el 
-          <a href="/Código de Conducta.pdf" target="_blank" rel="noopener noreferrer">
-            código de conducta
-          </a>
+          <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled required />
+          He leído y aceptado el código de conducta
         </label>
+        <p id="scroll-warning" style="color: red; font-size: 0.8em;">Por favor, desplázate hasta el final del documento para aceptar.</p>
       </div>
 
       <button type="submit">Enviar / Enviar / Submit</button>
