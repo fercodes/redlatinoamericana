@@ -87,22 +87,45 @@ const pageTitle = "Formulario para nuevos miembros";
       </div>
 
       <!-- ✅ Checkbox para aceptar leer el PDF -->
-      <div class="form-group">
-        <p><strong>Por favor, lea el documento hasta el final:</strong></p>
-        
-        <div id="scroll-container">
-          <div class="pdf-placeholder">
-            <iframe src="/Código de Conducta.pdf"></iframe>
+        <style>
+          #scroll-container {
+            height: 350px;
+            overflow-y: auto;
+            border: 2px solid #000;
+            position: relative;
+            background: #eee;
+          }
+
+          /* We make the internal content very tall so the container MUST scroll */
+          .pdf-placeholder {
+            height: 800px; /* Adjust this to be longer than the container height */
+            width: 100%;
+            position: relative;
+          }
+
+          iframe {
+            pointer-events: none; /* Prevents the PDF from "stealing" the scroll */
+            width: 100%;
+            height: 100%;
+          }
+        </style>
+
+        <div class="form-group">
+          <p><strong>Por favor, lea el documento hasta el final:</strong></p>
+          
+          <div id="scroll-container">
+            <div class="pdf-placeholder">
+              <iframe src="/Código de Conducta.pdf"></iframe>
+            </div>
+          </div>
+
+          <div style="margin-top: 15px;">
+            <label>
+              <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled />
+              He leído y aceptado el código de conducta
+            </label>
           </div>
         </div>
-
-        <div style="margin-top: 15px;">
-          <label>
-            <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled />
-            He leído y aceptado el código de conducta
-          </label>
-        </div>
-      </div>
 
       <button type="submit">Enviar / Enviar / Submit</button>
     </form>
