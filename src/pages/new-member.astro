@@ -87,17 +87,61 @@ const pageTitle = "Formulario para nuevos miembros";
       </div>
 
       <!-- ✅ Checkbox para aceptar leer el PDF -->
-      <div class="form-group">
-        <p><strong>Lea el Código de Conducta completo para continuar:</strong></p>
+      <style>
+        /* The visible window */
+        #scroll-window {
+          height: 400px;
+          width: 100%;
+          overflow-y: auto;
+          border: 2px solid #333;
+          background: #525659; /* Matches default PDF viewer background */
+          position: relative;
+        }
+
+        /* The actual tall content inside */
+        .pdf-wrapper {
+          height: 1200px; /* Forces scrolling regardless of PDF height */
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        iframe {
+          flex-grow: 1;
+          width: 100%;
+          border: none;
+        }
+
+        /* The invisible trigger at the very bottom */
+        #scroll-sentinel {
+          height: 20px;
+          width: 100%;
+          background: transparent;
+        }
+
+        .disabled-label {
+          color: #999;
+          cursor: not-allowed;
+          transition: all 0.3s ease;
+        }
         
-        <div id="pdf-scroll-box" style="height: 400px; overflow-y: scroll; border: 2px solid #333; position: relative;">
-          <iframe src="/Código de Conducta.pdf" width="100%" height="800px" style="border: none; display: block;"></iframe>
-          
-          <div id="end-of-doc" style="height: 10px; width: 100%;"></div>
+        .enabled-label {
+          color: #000;
+          cursor: pointer;
+          font-weight: bold;
+        }
+      </style>
+
+      <div class="form-group">
+        <div id="scroll-window">
+          <div class="pdf-wrapper">
+            <iframe src="/Código de Conducta.pdf"></iframe>
+            <div id="scroll-sentinel"></div>
+          </div>
         </div>
 
-        <div style="margin-top: 15px; padding: 10px; background: #f4f4f4;">
-          <label id="checkbox-label" style="opacity: 0.5; cursor: not-allowed;">
+        <div style="margin-top: 15px;">
+          <label id="checkbox-container" class="disabled-label">
             <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled />
             He leído y aceptado el código de conducta
           </label>
