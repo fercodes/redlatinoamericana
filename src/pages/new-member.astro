@@ -87,58 +87,14 @@ const pageTitle = "Formulario para nuevos miembros";
       </div>
 
       <!-- ✅ Checkbox para aceptar leer el PDF -->
-      <style>
-        .terms-container {
-          width: 100%;
-          max-width: 600px;
-          margin: 20px 0;
-        }
-        
-        /* Esta es la caja que el usuario debe scrollear */
-        .scroll-box {
-          height: 250px;
-          overflow-y: scroll;
-          border: 2px solid #333;
-          padding: 15px;
-          background: #fff;
-          font-family: sans-serif;
-          line-height: 1.5;
-        }
-
-        .scroll-box h3 { margin-top: 0; }
-
-        /* Estilo para el checkbox deshabilitado */
-        .checkbox-area {
-          margin-top: 15px;
-          padding: 10px;
-          background: #f0f0f0;
-          border-radius: 5px;
-        }
-
-        #label_accept { color: #999; cursor: not-allowed; }
-        #label_accept.active { color: #000; cursor: pointer; font-weight: bold; }
-      </style>
-
-      <div class="terms-container">
-        <div class="scroll-box" id="terms-box">
-          <h3>Código de Conducta</h3>
-          <p><strong>IMPORTANTE:</strong> Desplázate hasta el final para poder aceptar.</p>
-          
-          <p>1. Respeto mutuo entre todos los miembros...</p>
-          <p>2. No se permite el uso de lenguaje ofensivo...</p>
-          <p>3. Protección de datos y confidencialidad...</p>
-          <p>4. Cumplimiento de las normativas locales...</p>
-          <p>5. Responsabilidad en el uso de herramientas...</p>
-          <p style="margin-top: 300px;"><em>Fin del documento. Gracias por leer.</em></p>
-          
-          <div id="end-trigger"></div> </div>
-
-        <div class="checkbox-area">
-          <label id="label_accept">
-            <input type="checkbox" id="accept_checkbox" name="accept_pdf" disabled required />
-            He leído y acepto el código de conducta
-          </label>
-        </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="accept_pdf" required />
+          He leído y aceptado el 
+          <a href="/Código de Conducta.pdf" target="_blank" rel="noopener noreferrer">
+            código de conducta
+          </a>
+        </label>
       </div>
 
       <button type="submit">Enviar / Enviar / Submit</button>
