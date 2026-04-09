@@ -88,60 +88,56 @@ const pageTitle = "Formulario para nuevos miembros";
 
       <!-- ✅ Checkbox para aceptar leer el PDF -->
       <style>
-        /* The visible window */
-        #scroll-window {
-          height: 400px;
-          width: 100%;
-          overflow-y: auto;
-          border: 2px solid #333;
-          background: #525659; /* Matches default PDF viewer background */
+        #mandatory-scroll-area {
           position: relative;
-        }
-
-        /* The actual tall content inside */
-        .pdf-wrapper {
-          height: 1200px; /* Forces scrolling regardless of PDF height */
           width: 100%;
-          display: flex;
-          flex-direction: column;
+          height: 400px;
+          border: 2px solid #333;
+          background: #f0f0f0;
         }
 
-        iframe {
-          flex-grow: 1;
+        /* The PDF stays in the back */
+        #pdf-background {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
-          border: none;
+          height: 100%;
+          z-index: 1;
         }
 
-        /* The invisible trigger at the very bottom */
-        #scroll-sentinel {
-          height: 20px;
+        /* This transparent layer is what the user actually scrolls */
+        #scroll-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
-          background: transparent;
+          height: 100%;
+          overflow-y: scroll;
+          z-index: 2; /* Sits on top of the PDF */
         }
 
-        .disabled-label {
-          color: #999;
-          cursor: not-allowed;
-          transition: all 0.3s ease;
+        /* This invisible div forces the scroll height */
+        .height-trigger {
+          height: 1500px; /* Adjust this to be longer than the box */
+          width: 1px;
         }
-        
-        .enabled-label {
-          color: #000;
-          cursor: pointer;
-          font-weight: bold;
-        }
+
+        .disabled-check { color: #999; cursor: not-allowed; }
+        .enabled-check { color: green; font-weight: bold; cursor: pointer; }
       </style>
 
       <div class="form-group">
-        <div id="scroll-window">
-          <div class="pdf-wrapper">
-            <iframe src="/Código de Conducta.pdf"></iframe>
-            <div id="scroll-sentinel"></div>
+        <div id="mandatory-scroll-area">
+          <iframe id="pdf-background" src="/Código de Conducta.pdf"></iframe>
+          
+          <div id="scroll-overlay">
+            <div class="height-trigger"></div>
           </div>
         </div>
 
         <div style="margin-top: 15px;">
-          <label id="checkbox-container" class="disabled-label">
+          <label id="label-target" class="disabled-check">
             <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled />
             He leído y aceptado el código de conducta
           </label>
