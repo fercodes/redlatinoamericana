@@ -324,41 +324,16 @@ const pageTitle = "Formulario para nuevos miembros";
       if (error) {
         messageEl.textContent = "❌ Error al guardar datos.";
       } else {
-          // Capture the email the user entered before resetting the form
-          const userEmail = form.email.value; 
-          const whatsappLink = "https://chat.whatsapp.com/EASjSLEiLQ0GWepTBZJuGQ?mode=wwt";
+        messageEl.innerHTML = `
+          ✅ ¡Enviado con éxito!<br/><br/>
+          <a href="https://chat.whatsapp.com/EASjSLEiLQ0GWepTBZJuGQ?mode=wwt" target="_blank" rel="noopener noreferrer">
+            Únete al grupo de WhatsApp
+          </a><br/>
+          <img src="/grupo.jpg" class="grupo-img" width="240px" height="auto" />
 
-          messageEl.innerHTML = `
-            ✅ ¡Enviado con éxito!<br/><br/>
-            <a href="${whatsappLink}" target="_blank" rel="noopener noreferrer">
-              Únete al grupo de WhatsApp
-            </a><br/>
-            <img src="/grupo.jpg" class="grupo-img" width="240px" height="auto" />
-            <p style="font-size: 0.9em; color: #555;">También hemos enviado el enlace a: <strong>${userEmail}</strong></p>
-          `;
-
-          // Function to handle the actual email sending
-          sendEmailToUser(userEmail, whatsappLink);
-
-          form.reset();
-        }
-
-        /**
-        * Example function using EmailJS
-        * You need to sign up at emailjs.com to get your IDs
-        */
-        function sendEmailToUser(email, link) {
-          const templateParams = {
-            to_email: email,
-            message: `Hola! Aquí tienes el enlace para unirte al grupo de WhatsApp: ${link}`
-          };
-
-          // emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
-          //   .then(() => console.log('Email enviado!'))
-          //   .catch((err) => console.error('Error al enviar:', err));
-          
-          console.log("Simulación: Enviando email a " + email);
-        }
+        `;
+        form.reset();
+      }
     });
 
     // Research interests (checkboxes)
