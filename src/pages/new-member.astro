@@ -91,9 +91,10 @@ const pageTitle = "Formulario para nuevos miembros";
         #mandatory-scroll-area {
           position: relative;
           width: 100%;
-          height: 400px;
+          height: 450px; /* Visible window height */
           border: 2px solid #333;
           background: #f0f0f0;
+          overflow: hidden;
         }
 
         /* The PDF stays in the back */
@@ -102,11 +103,12 @@ const pageTitle = "Formulario para nuevos miembros";
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
+          height: 2000px; /* Total height of the PDF content */
           z-index: 1;
+          border: none;
         }
 
-        /* This transparent layer is what the user actually scrolls */
+        /* The transparent layer the user actually touches/scrolls */
         #scroll-overlay {
           position: absolute;
           top: 0;
@@ -114,18 +116,17 @@ const pageTitle = "Formulario para nuevos miembros";
           width: 100%;
           height: 100%;
           overflow-y: scroll;
-          z-index: 2; /* Sits on top of the PDF */
+          z-index: 2;
         }
 
-        /* Forces the scrollbar to appear */
+        /* This forces the scrollbar length of the overlay */
         .height-trigger {
-          height: 1500px; 
+          height: 2000px; 
           width: 1px;
         }
 
-        /* Visual states for the checkbox label */
         .disabled-check { color: #999; cursor: not-allowed; opacity: 0.6; }
-        .enabled-check { color: green; font-weight: bold; cursor: pointer; opacity: 1; }
+        .enabled-check { color: green; font-weight: bold; cursor: pointer; }
       </style>
 
       <div class="form-group">
@@ -142,31 +143,28 @@ const pageTitle = "Formulario para nuevos miembros";
             <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled />
             He leído y aceptado el código de conducta
           </label>
-          <p id="scroll-instruction" style="font-size: 0.8em; color: #666;">
-            (Desplázate hasta el final del recuadro para habilitar)
-          </p>
         </div>
       </div>
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const overlay = document.getElementById("scroll-overlay");
+          const pdf = document.getElementById("pdf-background");
           const checkbox = document.getElementById("accept_pdf");
           const label = document.getElementById("label-target");
-          const instruction = document.getElementById("scroll-instruction");
 
           overlay.addEventListener("scroll", function () {
-            // Calculate scroll progress
-            const currentScroll = overlay.scrollTop + overlay.offsetHeight;
+            // 1. SYNC: Move the PDF position based on the overlay scroll
+            const scrollValue = overlay.scrollTop;
+            pdf.style.top = `-${scrollValue}px`;
+
+            // 2. CHECK: See if we reached the bottom
+            const currentPos = overlay.scrollTop + overlay.offsetHeight;
             const totalHeight = overlay.scrollHeight;
 
-            // When the user is within 15px of the very bottom
-            if (currentScroll >= totalHeight - 15) {
-              // UNLOCK
+            if (currentPos >= totalHeight - 20) {
               checkbox.disabled = false;
               label.className = "enabled-check";
-              instruction.innerHTML = "✅ ¡Listo! Ya puedes marcar la casilla.";
-              instruction.style.color = "green";
             }
           });
         });
