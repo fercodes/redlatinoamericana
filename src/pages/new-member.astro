@@ -88,96 +88,75 @@ const pageTitle = "Formulario para nuevos miembros";
 
       <!-- ✅ Checkbox para aceptar leer el PDF -->
       <style>
-        #mandatory-scroll-area {
-          position: relative;
+        /* This is the visible window on your page */
+        #pdf-container {
           width: 100%;
-          height: 1000px; /* How much of the PDF is visible at once */
+          height: 500px; 
           border: 2px solid #333;
-          background: #525659; /* PDF viewer grey */
-          overflow: hidden;
-          user-select: none;
+          overflow-y: auto; /* We use the ACTUAL scroll of this div */
+          position: relative;
+          background: #525659;
         }
 
-        /* The PDF iframe */
-        #pdf-background {
-          position: absolute;
-          top: 0;
-          left: 0;
+        /* We make the iframe height massive (e.g., 3000px) */
+        /* This forces the PDF to unfold completely inside the container */
+        #pdf-iframe {
           width: 100%;
-          height: 100%; /* Keeps the internal PDF viewer functional */
-          z-index: 1;
+          height: 3500px; 
           border: none;
-          transform-origin: top;
+          display: block;
         }
 
-        /* The transparent layer that handles the scroll logic */
-        #scroll-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
+        /* Marker at the very bottom */
+        #bottom-sentinel {
+          height: 20px;
           width: 100%;
-          height: 100%;
-          overflow-y: scroll;
-          z-index: 2;
         }
 
-        /* INCREASE THIS if your PDF is very long (e.g., 5000px or 8000px) */
-        .height-trigger {
-          height: 8000px; 
-          width: 1px;
-        }
-
-        .disabled-check { color: #999; cursor: not-allowed; opacity: 0.6; }
-        .enabled-check { color: green; font-weight: bold; cursor: pointer; }
+        .disabled-label { color: #999; cursor: not-allowed; opacity: 0.6; }
+        .enabled-label { color: green; font-weight: bold; cursor: pointer; opacity: 1; }
       </style>
 
       <div class="form-group">
-        <div id="mandatory-scroll-area">
-          <iframe id="pdf-background" src="/Código de Conducta.pdf"></iframe>
+        <div id="pdf-container">
+          <iframe id="pdf-iframe" src="/Código de Conducta.pdf"></iframe>
           
-          <div id="scroll-overlay">
-            <div class="height-trigger" id="trigger"></div>
-          </div>
+          <div id="bottom-sentinel"></div>
         </div>
 
         <div style="margin-top: 15px;">
-          <label id="label-target" class="disabled-check">
+          <label id="checkbox-label" class="disabled-label">
             <input type="checkbox" id="accept_pdf" name="accept_pdf" disabled />
             He leído y aceptado el código de conducta
           </label>
-          <p id="status-text" style="font-size: 0.8em; color: #666;">
-            Desplázate hasta el final para desbloquear la casilla.
-          </p>
         </div>
       </div>
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          const overlay = document.getElementById("scroll-overlay");
-          const pdf = document.getElementById("pdf-background");
+          const container = document.getElementById("pdf-container");
           const checkbox = document.getElementById("accept_pdf");
-          const label = document.getElementById("label-target");
-          const status = document.getElementById("status-text");
-          const trigger = document.getElementById("trigger");
+          const label = document.getElementById("checkbox-label");
+          const sentinel = document.getElementById("bottom-sentinel");
 
-          overlay.addEventListener("scroll", function () {
-            // 1. Calculate how much we have scrolled in percentage
-            const maxScroll = overlay.scrollHeight - overlay.clientHeight;
-            const scrollPercent = overlay.scrollTop / maxScroll;
-
-            // 2. Move the PDF. 
-            // We move it up by the (total height of trigger - visible height of window)
-            const moveDistance = (trigger.offsetHeight - 500) * scrollPercent;
-            pdf.style.transform = `translateY(-${moveDistance}px)`;
-
-            // 3. Unlock Checkbox
-            if (scrollPercent >= 0.98) { // 98% scrolled
-              checkbox.disabled = false;
-              label.className = "enabled-check";
-              status.innerText = "✅ Documento leído. Ya puedes aceptar.";
-              status.style.color = "green";
-            }
+          // We use IntersectionObserver to see when the 'bottom-sentinel' 
+          // enters the visible area of the 'pdf-container'
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                // SUCCESS: User scrolled to the very bottom
+                checkbox.disabled = false;
+                label.className = "enabled-label";
+                console.log("Checkbox unlocked!");
+                observer.unobserve(sentinel); // Stop watching once unlocked
+              }
+            });
+          }, {
+            root: container, // Watch scrolling inside the container
+            threshold: 1.0   // Require the sentinel to be 100% visible
           });
+
+          observer.observe(sentinel);
         });
       </script>
 
