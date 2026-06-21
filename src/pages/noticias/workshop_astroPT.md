@@ -15,7 +15,7 @@ Como resultado, el I WAPT reunió a investigadores de 20 instituciones de invest
 
 
 <div style="display:flex; gap:10px;">
-  <img src="/blog/wsastropt.jpeg" alt="Imagen 1" style="width:50%; height:auto;">
+  <img src="/blog/wsastropt3.jpeg" alt="Imagen 1" style="width:50%; height:auto;">
   <img src="/blog/wsastropt2.jpeg" alt="Imagen 2" style="width:50%; height:auto;">
 </div>
 
@@ -25,7 +25,7 @@ Como resultado, el I WAPT reunió a investigadores de 20 instituciones de invest
 La Red Latinoamericana de Ciencias Planetarias y Exploración Espacial, mediante su punto de contacto nacional en Brasil (Marçal Evangelista, mesantana@uefs.br; tercera persona de izquierda a derecha an la siguiente foto), desempeñó un papel fundamental en la difusión del evento y en la conexión entre investigadores y estudiantes con intereses comunes. Gracias a este espacio de integración promovido por la Red, los interesados pudieron conocer la iniciativa, contactar al representante nacional, y recibir orientación y apoyo para participar en el workshop.
 La amplia difusión realizada por la Red permitió que el evento alcanzara a la comunidad científica latinoamericana y atrajera a miembros de la misma (por ejemplo, de Costa Rica y Colombia) con interés en desarrollar sus estudios y proyectos de investigación en Brasil, fortaleciendo así los vínculos académicos y científicos en la región.
 
-<img src="/blog/wsastropt2.jpeg" alt="Description" style="max-width:100%; height:auto;">
+<img src="/blog/wsastropt.jpeg" alt="Description" style="max-width:100%; height:auto;">
 
 *Integrantes de la Red Latinoamericana de Ciencias Planetarias y Exploración Espacial presentes en el I Workshop AstroPT*
 
