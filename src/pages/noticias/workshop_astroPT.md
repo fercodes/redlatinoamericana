@@ -3,7 +3,7 @@ layout: ../../layouts/MarkdownPostLayout.astro
 title: 'I Workshop AstroPT del Observatório Astronômico Antares, Brasil'
 pubDate: 2026-06-26
 description: ''
-author: 'Red Latinoamericana de Ciencias Planetarias y Exploración Espacial'
+author: 'Marçal Evangelista'
 image:
   url: ''
   alt: ''
