@@ -19,7 +19,7 @@ Como resultado, el I WAPT reunió a investigadores de 20 instituciones de invest
   <img src="/blog/wsastropt2.jpeg" alt="Imagen 2" style="width:50%; height:auto;">
 </div>
 
-*Participantes del I Workshop AstroPT y el Observatório Astronômico Antares al fondo*
+*Participantes del I Workshop AstroPT en frente al Observatório Astronômico Antares (Feira de Santana, Bahia, Brasil)*
 
 
 La Red Latinoamericana de Ciencias Planetarias y Exploración Espacial, mediante su punto de contacto nacional en Brasil (Marçal Evangelista, mesantana@uefs.br; tercera persona de izquierda a derecha an la siguiente foto), desempeñó un papel fundamental en la difusión del evento y en la conexión entre investigadores y estudiantes con intereses comunes. Gracias a este espacio de integración promovido por la Red, los interesados pudieron conocer la iniciativa, contactar al representante nacional, y recibir orientación y apoyo para participar en el workshop.
