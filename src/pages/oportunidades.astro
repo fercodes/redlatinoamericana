@@ -20,19 +20,17 @@ const localEvents = allPosts
     url: post.url
   }));
 
-
-
----
 // --- 2. CONFIGURATION CREDENTIALS ---
-// Reemplaza la string hardcodeada por esto:
-const MY_SECRET_KEY = import.meta.env.PUBLIC_GOOGLE_API_KEY || "";
+// Primero declaramos el ID de la hoja para que esté disponible abajo
+const MY_SHEET_ID = "1ZIohI-F3I3vDG72egkV4887ETu7H8q2vK1magkC-HSI";
 
 const MY_CALENDAR_ID = "f81fc557dc6efd414b71b02c01fd66bd1b090f8564f06865ef3142463f277e49@group.calendar.google.com";
-const MY_SHEET_ID = "1ZIohI-F3I3vDG72egkV4887ETu7H8q2vK1magkC-HSI";
 const MY_FORM_URL = "https://forms.gle/2GJ2BiRKvKYzD34J7";
+const MY_SECRET_KEY = import.meta.env.PUBLIC_GOOGLE_API_KEY || "";
 
+// Ahora sí, construimos la URL usando la variable ya declarada
 const RAW_DATA_FEED = `https://docs.google.com/spreadsheets/d/${MY_SHEET_ID}/gviz/tq?tqx=out:json&gid=0`;
----  
+---
 
 <BaseLayout pageTitle={pageTitle}>
   <p class="subtitle">Aquí encontrarás pasantías, becas, oportunidades y eventos que estaremos compartiendo.</p>
