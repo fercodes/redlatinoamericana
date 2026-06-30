@@ -1,0 +1,409 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogPost from '../components/BlogPost.astro';
+
+const pageTitle = "Oportunidades";
+
+// --- 1. LOCAL MARKDOWN FILES SAFETY FALLBACK ---
+let allPosts: any[] = [];
+try {
+  allPosts = Object.values(import.meta.glob('./oportunidades/*.md', { eager: true }));
+} catch (e) {
+  allPosts = [];
+}
+
+const localEvents = allPosts
+  .filter((post: any) => post?.frontmatter?.date)
+  .map((post: any) => ({
+    title: post.frontmatter.title,
+    date: post.frontmatter.date, 
+    url: post.url
+  }));
+
+// --- 2. CONFIGURATION CREDENTIALS ---
+const MY_SECRET_KEY = "AIzaSyDHT3TsgBAozYIhx-Q8nzddpHzxOSI6At4";
+const MY_CALENDAR_ID = "f81fc557dc6efd414b71b02c01fd66bd1b090f8564f06865ef3142463f277e49@group.calendar.google.com";
+const MY_SHEET_ID = "1ZIohI-F3I3vDG72egkV4887ETu7H8q2vK1magkC-HSI";
+const MY_FORM_URL = "https://forms.gle/2GJ2BiRKvKYzD34J7";
+
+const RAW_DATA_FEED = `https://docs.google.com/spreadsheets/d/${MY_SHEET_ID}/gviz/tq?tqx=out:json&gid=0`;
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <p class="subtitle">Aquí encontrarás pasantías, becas, oportunidades y eventos que estaremos compartiendo.</p>
+
+  <div 
+    id="config-bridge-v2" 
+    data-local={JSON.stringify(localEvents)}
+    data-key={MY_SECRET_KEY}
+    data-cal={MY_CALENDAR_ID}
+    data-url={RAW_DATA_FEED}
+  ></div>
+
+  <div class="split-layout-container">
+    
+    <section class="calendar-column">
+      <h2 class="section-title">Calendario de Eventos</h2>
+      <div class="calendar-wrapper">
+        <div id="calendar"></div>
+      </div>
+    </section>
+
+    <section class="feed-column">
+      <div class="feed-header">
+        <h2 class="section-title">Todas las publicaciones</h2>
+        <a href={MY_FORM_URL} target="_blank" class="submit-btn">+ Enviar Oportunidad</a>
+      </div>
+      
+      <div class="scrollable-feed-container">
+        <ul id="unified-post-list" class="post-list">
+          {allPosts.length > 0 ? (
+            allPosts.map((post: any) => (
+              <li class="post-item local-item">
+                <BlogPost url={post.url} title={post.frontmatter.title} />
+                <span class="badge local-badge">Editorial</span>
+              </li>
+            ))
+          ) : null}
+          
+          <li id="feed-loading-spinner" class="feed-spinner-hint">Cargando convocatorias remotas...</li>
+        </ul>
+        <div id="feed-empty-state" class="feed-empty-hint hidden">No hay publicaciones disponibles.</div>
+      </div>
+    </section>
+    
+  </div>
+</BaseLayout>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+<script is:inline>
+  function initOportunidades() {
+    const bridge = document.getElementById('config-bridge-v2');
+    if (!bridge) return;
+
+    const localEventsRaw = bridge.getAttribute('data-local');
+    const localEvents = localEventsRaw ? JSON.parse(localEventsRaw) : [];
+    const dataUrl = bridge.getAttribute('data-url') || "";
+
+    const calendarEl = document.getElementById('calendar');
+    const unifiedListEl = document.getElementById('unified-post-list');
+    const loadingEl = document.getElementById('feed-loading-spinner');
+    const emptyEl = document.getElementById('feed-empty-state');
+
+    if (!dataUrl || dataUrl.includes("PEGA_AQUÍ")) return;
+
+    async function loadAllData() {
+      try {
+        const response = await fetch(dataUrl);
+        const text = await response.text();
+        const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+        const data = JSON.parse(jsonString);
+        const rows = data.table.rows;
+        
+        if (loadingEl) loadingEl.remove();
+
+        const sheetEventsForCalendar = [];
+
+        if (rows && rows.length > 0) {
+          const today = new Date();
+          today.setHours(0,0,0,0);
+
+          rows.forEach(row => {
+            if (!row.c) return;
+            
+            const title = row.c[2] ? row.c[2].v : '';
+            const rawDeadline = row.c[4] ? (row.c[4].f || row.c[4].v) : '';
+            const location = row.c[3] ? row.c[3].v : 'No especificado';
+            const institucion = row.c[6] ? row.c[6].v : 'No especificada';
+            const linkOficial = row.c[7] ? row.c[7].v : '';
+            const detalles = row.c[8] ? row.c[8].v : 'Sin detalles adicionales.';
+
+            if (!title) return;
+
+            let isExpired = false;
+            let ISOStringDate = "";
+
+            if (rawDeadline) {
+              let parsedDate = null;
+
+              if (typeof rawDeadline === 'string' && rawDeadline.includes('Date')) {
+                const parts = rawDeadline.replace(/Date\(|\)/g, '').split(',');
+                if (parts.length >= 3) {
+                  parsedDate = new Date(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+                }
+              } 
+              
+              if (!parsedDate || isNaN(parsedDate.getTime())) {
+                parsedDate = new Date(rawDeadline);
+              }
+
+              if (!parsedDate || isNaN(parsedDate.getTime())) {
+                const dateCleaned = String(rawDeadline).replace(/[\s]/g, '');
+                const matches = dateCleaned.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+                if (matches) {
+                  parsedDate = new Date(parseInt(matches[3]), parseInt(matches[2]) - 1, parseInt(matches[1]));
+                }
+              }
+
+              if (parsedDate && !isNaN(parsedDate.getTime())) {
+                if (parsedDate < today) isExpired = true;
+
+                const yyyy = parsedDate.getFullYear();
+                const mm = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(parsedDate.getDate()).padStart(2, '0');
+                ISOStringDate = `${yyyy}-${mm}-${dd}`;
+              }
+            }
+
+            const queryParams = new URLSearchParams({
+              title,
+              deadline: rawDeadline,
+              location,
+              institucion,
+              link: linkOficial,
+              details: detalles
+            }).toString();
+
+            const targetUrl = `/oportunidades/convocatoria?${queryParams}`;
+
+            if (ISOStringDate) {
+              sheetEventsForCalendar.push({
+                title: `• ${title}`,
+                start: ISOStringDate,
+                url: targetUrl,
+                color: '#1e3a8a',
+                textColor: '#ffffff'
+              });
+            }
+
+            const itemHtml = `
+              <li class="post-item remote-item ${isExpired ? 'expired' : ''}">
+                <div class="post-link-wrapper">
+                  <a href="${targetUrl}" class="dynamic-post-title">${title}</a>
+                  <div class="post-meta-sub">
+                    <span>📍 ${location}</span> • <span>📅 Cierre: ${rawDeadline || 'Abierto'}</span>
+                    ${isExpired ? '<span class="status-expired">Finalizado</span>' : ''}
+                  </div>
+                </div>
+                <span class="badge form-badge">Formulario</span>
+              </li>
+            `;
+            
+            if (unifiedListEl) {
+              unifiedListEl.insertAdjacentHTML('beforeend', itemHtml);
+            }
+          });
+        }
+
+        const totalItems = unifiedListEl ? unifiedListEl.querySelectorAll('.post-item').length : 0;
+        if (totalItems === 0 && emptyEl) {
+          emptyEl.classList.remove('hidden');
+        }
+
+        // --- RENDERIZADO DEL CALENDARIO ---
+        if (calendarEl && !calendarEl.classList.contains('fc')) {
+          const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es', 
+            headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth' },
+            buttonText: { today: 'Hoy', month: 'Mes' },
+            eventSources: [
+              { events: localEvents, color: '#334155', textColor: '#ffffff' },
+              { events: sheetEventsForCalendar }
+            ],
+            eventClick: function(info) {
+              if (info.event.url) {
+                info.jsEvent.preventDefault();
+                window.location.href = info.event.url; 
+              }
+            },
+            height: 'auto'
+          });
+          calendar.render();
+        }
+
+      } catch (e) {
+        console.error("Error cargando convocatorias remotas:", e);
+        if (loadingEl) loadingEl.innerText = "Error cargando convocatorias del formulario.";
+      }
+    }
+
+    loadAllData();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOportunidades);
+  } else {
+    initOportunidades();
+  }
+  document.addEventListener('astro:page-load', initOportunidades);
+</script>
+
+<style>
+  .subtitle { color: #666; font-size: 1.1rem; margin-bottom: 2rem; }
+  .section-title { font-size: 1.4rem; font-weight: 600; color: #222; margin: 0 0 1rem 0; padding-bottom: 0.5rem; }
+
+  /* CONTENEDOR FLEX PRINCIPAL */
+  .split-layout-container { 
+    display: flex; 
+    flex-direction: row; 
+    gap: 3rem; 
+    margin-top: 2rem; 
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  /* Columna Izquierda Estática */
+  .calendar-column {
+    flex: 0 0 440px;
+    position: sticky; /* Opcional: mantiene el calendario visible mientras haces scroll en el feed */
+    top: 2rem;
+  }
+
+  /* Columna Derecha con Feed Dinámico */
+  .feed-column {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* CONTENEDOR CON SCROLL INTEGRADO */
+  .scrollable-feed-container {
+    max-height: 720px; /* Altura máxima óptima para no romper el layout */
+    overflow-y: auto;   /* Activa el scroll vertical */
+    padding-right: 0.75rem; /* Margen de seguridad para la barra */
+  }
+
+  /* Estilización elegante de la barra de scroll (Webkit browsers como Chrome/Safari) */
+  .scrollable-feed-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollable-feed-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+  .scrollable-feed-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  .scrollable-feed-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Vista responsiva */
+  @media (max-width: 1024px) {
+    .split-layout-container { 
+      flex-direction: column; 
+      gap: 2rem;
+    }
+    .calendar-column {
+      width: 100%;
+      flex: none;
+      position: static;
+    }
+    .calendar-wrapper {
+      margin: 0 auto;
+    }
+    .scrollable-feed-container {
+      max-height: none; /* En teléfonos es mejor el scroll nativo general */
+      overflow-y: visible;
+      padding-right: 0;
+    }
+  }
+  
+  /* Tarjeta del Calendario */
+  .calendar-wrapper { 
+    max-width: 440px; 
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04), 0 2px 4px -1px rgba(0,0,0,0.02);
+  }
+
+  /* Header del Feed */
+  .feed-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+  .submit-btn { background-color: #222; color: #fff; padding: 0.45rem 0.85rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: background-color 0.2s; }
+  .submit-btn:hover { background-color: #444; }
+
+  /* Lista de Publicaciones */
+  .post-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+  
+  .post-item { 
+    background: #fff; 
+    border: 1px solid #e5e5e5; 
+    border-radius: 6px; 
+    padding: 1.5rem 2rem; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    gap: 1.5rem;
+  }
+  @media (max-width: 640px) {
+    .post-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .badge { align-self: flex-start; }
+  }
+  
+  .post-item.expired { background-color: #fcfcfc; opacity: 0.6; }
+  .post-link-wrapper { flex: 1; min-width: 0; }
+  
+  .dynamic-post-title { 
+    font-size: 1.6rem; 
+    font-weight: 600; 
+    color: #1e3a8a; 
+    text-decoration: none; 
+    line-height: 1.3;
+    display: inline-block;
+    word-break: break-word;
+  }
+  .dynamic-post-title:hover { color: #2563eb; text-decoration: underline; }
+  
+  :global(.post-item.local-item a) {
+    font-size: 1.6rem !important;
+    font-weight: 600 !important;
+    color: #1e3a8a !important;
+    text-decoration: none !important;
+    line-height: 1.3 !important;
+  }
+  :global(.post-item.local-item a:hover) {
+    color: #2563eb !important;
+    text-decoration: underline !important;
+  }
+  
+  .post-meta-sub { 
+    font-size: 1rem; 
+    color: #555; 
+    margin-top: 0.5rem; 
+    display: flex; 
+    gap: 0.85rem; 
+    align-items: center; 
+    flex-wrap: wrap; 
+  }
+  .status-expired { background: #fee2e2; color: #991b1b; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem; }
+
+  .badge { font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.02em; shrink: 0; }
+  .local-badge { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+  .form-badge { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+  .feed-spinner-hint { padding: 1.5rem; text-align: center; color: #777; font-size: 1rem; font-style: italic; list-style: none; border: 1px dashed #e5e5e5; border-radius: 6px; }
+  .feed-empty-hint { text-align: center; padding: 3rem; color: #666; border: 1px dashed #ccc; border-radius: 6px; }
+  .hidden { display: none !important; }
+
+  /* FullCalendar */
+  :global(.fc) {
+    --fc-border-color: #f1f5f9;
+    --fc-button-bg-color: #1e293b;
+    --fc-button-border-color: #1e293b;
+    --fc-button-hover-bg-color: #0f172a;
+    --fc-button-hover-border-color: #0f172a;
+    font-family: inherit;
+    font-size: 0.78rem;
+  }
+  :global(.fc .fc-toolbar-title) { font-size: 1.05rem; font-weight: 600; color: #1e293b; }
+  :global(.fc .fc-button) { padding: 0.25rem 0.45rem !important; font-size: 0.75rem !important; }
+  :global(.fc .fc-col-header-cell-cushion) { color: #475569; font-weight: 600; text-decoration: none; padding: 4px 0 !important; }
+  :global(.fc .fc-daygrid-day-number) { color: #64748b; text-decoration: none; font-size: 0.75rem; padding: 2px 4px !important; }
+  :global(.fc-event) { cursor: pointer; padding: 1px 3px; border-radius: 2px; font-size: 0.72rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+  :global(.fc .fc-daygrid-body) { width: 100% !important; }
+</style>

@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = "Detalles de la Convocatoria";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="back-nav">
+    <a href="/oportunidades" class="back-btn">← Volver a Oportunidades</a>
+  </div>
+
+  <article class="details-container">
+    <header class="details-header">
+      <h1 id="det-title" class="loading-placeholder">Cargando título...</h1>
+      <div class="header-meta">
+        <span class="meta-item font-institution" id="det-institution"></span>
+        <span class="meta-item font-location" id="det-location"></span>
+      </div>
+    </header>
+
+    <div class="details-content-grid">
+      <section class="main-info">
+        <h2 class="block-title">Descripción y Detalles</h2>
+        <p id="det-description" class="description-text">Cargando información detallada...</p>
+      </section>
+
+      <aside class="sidebar-info">
+        <div class="info-card">
+          <span class="card-label">Plazo Máximo de Postulación:</span>
+          <span class="card-value" id="det-deadline">-</span>
+        </div>
+        
+        <div id="action-wrapper" class="hidden">
+          <a href="#" id="det-link" target="_blank" class="action-btn">Ir a la Convocatoria Oficial →</a>
+        </div>
+      </aside>
+    </div>
+  </article>
+</BaseLayout>
+
+<script is:inline>
+  function loadConvocatoriaDetails() {
+    const params = new URLSearchParams(window.location.search);
+    
+    const title = params.get('title');
+    const deadline = params.get('deadline') || 'Abierto';
+    const location = params.get('location') || 'No especificado';
+    const institucion = params.get('institucion') || 'No especificada';
+    const link = params.get('link');
+    const details = params.get('details') || 'No hay detalles adicionales provistos.';
+
+    if (!title) {
+      window.location.href = '/oportunidades';
+      return;
+    }
+
+    // Insertar datos dinámicamente en el DOM de forma limpia
+    document.getElementById('det-title').innerText = title;
+    document.getElementById('det-institution').innerText = `🏢 ${institucion}`;
+    document.getElementById('det-location').innerText = `📍 ${location}`;
+    document.getElementById('det-description').innerText = details;
+    document.getElementById('det-deadline').innerText = deadline;
+
+    // Remover placeholders de carga una vez renderizado todo
+    document.getElementById('det-title').classList.remove('loading-placeholder');
+
+    // Control del botón de enlace externo oficial
+    const linkBtn = document.getElementById('det-link');
+    const wrapper = document.getElementById('action-wrapper');
+    if (link && link.startsWith('http')) {
+      linkBtn.href = link;
+      wrapper.classList.remove('hidden');
+    }
+  }
+
+  // Ejecución segura de carga considerando el ciclo de vida del navegador
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadConvocatoriaDetails);
+  } else {
+    loadConvocatoriaDetails();
+  }
+  document.addEventListener('astro:page-load', loadConvocatoriaDetails);
+</script>
+
+<style>
+  .back-nav { margin-bottom: 2rem; }
+  .back-btn { color: #666; text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+  .back-btn:hover { color: #222; text-decoration: underline; }
+  
+  .details-container { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 2.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+  .details-header { border-bottom: 1px solid #eee; padding-bottom: 1.5rem; margin-bottom: 2rem; }
+  .details-header h1 { font-size: 2rem; color: #111; margin: 0 0 0.75rem 0; font-weight: 700; }
+  
+  .header-meta { display: flex; gap: 1.5rem; font-size: 0.95rem; color: #555; }
+  .loading-placeholder { color: #aaa !important; font-style: italic; }
+
+  .details-content-grid { display: grid; grid-template-columns: 3fr 1fr; gap: 3rem; }
+  @media (max-width: 768px) { .details-content-grid { grid-template-columns: 1fr; gap: 2rem; } }
+
+  .block-title { font-size: 1.25rem; color: #222; font-weight: 600; margin-bottom: 1rem; }
+  .description-text { color: #333; font-size: 1.05rem; line-height: 1.6; white-space: pre-wrap; }
+
+  .sidebar-info { display: flex; flex-direction: column; gap: 1.5rem; }
+  .info-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1.25rem; }
+  .card-label { display: block; font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600; margin-bottom: 0.25rem; }
+  .card-value { font-size: 1.15rem; font-weight: 700; color: #1e293b; }
+
+  .action-btn { display: block; text-align: center; background: #1e3a8a; color: #fff; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 500; text-decoration: none; font-size: 0.95rem; transition: background 0.2s; }
+  .action-btn:hover { background: #1d4ed8; }
+  .hidden { display: none !important; }
+</style>
